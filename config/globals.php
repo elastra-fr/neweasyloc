@@ -1,0 +1,15 @@
+<?php
+
+CONST MONGO_SERVER = "localhost";
+CONST MONGO_HOST = "localhost";
+CONST MONGO_USER= "root";
+CONST MONGO_PASSWORD = "";
+CONST MONGO_DATABASE = "db_name";
+
+CONST SQLSRV_SERVER = "EmmanuelDev";
+CONST SQLSRV_HOST = "localhost";
+CONST SQLSRV_USER= "backoffice";
+CONST SQLSRV_PASSWORD = "1234567";
+CONST SQLSRV_DATABASE = "easyloc";
+
+
