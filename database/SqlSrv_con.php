@@ -37,14 +37,14 @@ try {
 
 $this->connection = new PDO($dsn, $this->user, $this->password);
 $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); 
-echo "Connexion réussie !";
+//echo "Connexion réussie !";
 return true;
 
 
 }
 
 catch (PDOException $e) {
-echo "Echec de la connexion : " . $e->getMessage();
+//echo "Echec de la connexion : " . $e->getMessage();
 return false;
 
 }

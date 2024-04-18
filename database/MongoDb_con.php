@@ -27,10 +27,10 @@ class MongoDB_con {
 
 public function connect() {
     if ($this->db instanceof MongoDB\Database) {
-        echo "Connexion réussie !";
+       // echo "Connexion réussie !";
         return true;
     }
-    echo "Echec de la connexion";
+    //echo "Echec de la connexion";
     return false;   }
 
 

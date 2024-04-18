@@ -123,4 +123,29 @@ public static function getAllCustomers() {
 
     }
 
+    //Fonction pour récupérer les données d'un client par son ID sur mongoDB au format json
+
+    public static function getCustomerById($uid) {
+
+        $connectionMdb = new MongoDB_con();
+        $db = $connectionMdb->getDB();
+        $collection = $db->Customer;
+        $cursor = $collection->find(['_id' => $uid]);
+        $customer = null;
+        foreach ($cursor as $document) {
+            $customer = new Customer($document['_id'], $document['first_name'], $document['second_name'], $document['address'], $document['permit_number']);
+        }
+        if ($customer === null) {
+            return null;
+        }
+        return json_encode([
+            'uid' => $customer->getUid(),
+            'first_name' => $customer->getFirst_name(),
+            'second_name' => $customer->getSecond_name(),
+            'address' => $customer->getAddress(),
+            'permit_number' => $customer->getPermit_number()
+        ], JSON_PRETTY_PRINT);
+    }
+
+
 }

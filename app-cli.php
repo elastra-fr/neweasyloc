@@ -1,13 +1,36 @@
 <?php
-//require_once 'database/MongoDb_con.php';
-//require_once 'model/Customer.php';
-//require_once 'vendor/autoload.php';
-typewriter("\nVault-Tec Systems - Copyright 2077\n\n");
+
+typewriter("\nVault-Tec Systems  v.0.7.7\n\n");
 typewriter("Bienvenue dans l'application de gestion EasyLoc\n\n");
 
 
-//echo "\nVault-Tec Systems - Copyright 2024\n\n";
-//echo "Bienvenue dans l'application de gestion EasyLoc\n\n";
+
+
+require_once 'database/SqlSrv_con.php';
+require_once 'database/MongoDb_con.php';
+
+//Test de connexion à la base de données MongoDB
+
+$connectionMdb = new MongoDB_con();
+
+if ($connectionMdb->connect()) {
+    typewriter("Connexion réussie à la base de données MongoDB.\n");
+} else {
+    typewriter("Echec de la connexion à la base de données MongoDB. Verifiez que l'extension mongodb est bien installée et activée sur votre version de PHP (CLI compris)\n");
+}
+
+//Test de connexion à la base de données SQL Server
+
+$connection = new SqlSrv_con();
+
+if ($connection->connect()) {
+    typewriter("Connexion réussie à la base de données SQL Server.\n");
+} else {
+    typewriter("Echec de la connexion à la base de données SQL Server. Verifiez que l'extension sqlsrv est bien installée et activée sur votre version de PHP (CLI compris)\n");
+}
+
+
+
 
 
 $menu = [
@@ -19,7 +42,10 @@ $menu = [
 ];
 
 while (true) {
-echo "\033[1m\033[32m[Opérations sur les locations]\033[0m\n";
+
+    //echo "Sélectionnez une option :\n";
+    typewriter("\n\nSélectionnez une option :\n");  
+
     foreach ($menu as $key => $value) {
         echo "{$key}. {$value}\n";
     }
@@ -32,7 +58,7 @@ echo "\033[1m\033[32m[Opérations sur les locations]\033[0m\n";
 
         require_once 'model/Customer.php';
         $customers = Customer::getAllCustomers();
-        var_dump($customers);
+        echo $customers;
             
 
 
@@ -121,10 +147,12 @@ function showCustomerById()
     echo "Le client a été affiché.\n";
     return; // Sortir de la fonction et revenir au menu principal
 }
-
 function typewriter($text) {
-    for ($i = 0; $i < strlen($text); $i++) {
-        echo "\033[1;32m" . $text[$i] . "\033[0m";
-        usleep(10000); // Suspendre l'exécution du script pendant 100 microsecondes
+    $text = mb_convert_encoding($text, 'UTF-8');
+
+    for ($i = 0; $i < mb_strlen($text); $i++) {
+        echo "\033[1;32m" . mb_substr($text, $i, 1) . "\033[0m";
+        usleep(50000); // Suspendre l'exécution du script pendant 100 microsecondes
     }
 }
+
