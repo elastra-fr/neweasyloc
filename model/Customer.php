@@ -1,8 +1,85 @@
 <?php
 
-require_once 'vendor/autoload.php';
+require 'vendor/autoload.php';
 require_once 'database/MongoDb_con.php';
 
+//Définition de la classe Customer avec ses getters et setters
+
+class Customer {
+
+    private $uid;
+    private $first_name;
+    private $second_name;
+    private $address;
+    private $permit_number;
+
+    public function __construct($uid, $first_name, $second_name, $address, $permit_number) {
+        $this->uid = $uid;
+        $this->first_name = $first_name;
+        $this->second_name = $second_name;
+        $this->address = $address;
+        $this->permit_number = $permit_number;
+    }
+
+    public function getUid() {
+        return $this->uid;
+    }
+
+    public function setUid($uid) {
+        $this->uid = $uid;
+    }
+
+    public function getFirstName() {
+        return $this->first_name;
+    }
+
+    public function setFirstName($first_name) {
+        $this->first_name = $first_name;
+    }
+
+    public function getSecondName() {
+        return $this->second_name;
+    }
+
+    public function setSecondName($second_name) {
+        $this->second_name = $second_name;
+    }
+
+    public function getAddress() {
+        return $this->address;
+    }
+
+    public function setAddress($address) {
+        $this->address = $address;
+    }
+
+    public function getPermitNumber() {
+        return $this->permit_number;
+    }
+
+    public function setPermitNumber($permit_number) {
+        $this->permit_number = $permit_number;
+    }
+
+
+
+}
+
+//Définition de la classe CustomerModel qui hérite de la classe AbstractMongoDb
+
+
+
+
+
+
+
+
+
+
+/*
+require_once 'vendor/autoload.php';
+require_once 'database/MongoDb_con.php';
+*/
 /*
   collection Customer
  Table Customer : Contient les données clients
@@ -12,7 +89,7 @@ require_once 'database/MongoDb_con.php';
 - address (CHAR(255) - Adresse complète)
 - permit_number (CHAR(255) -numéro de permis)
  */
-
+/*
 
 class Customer {
 
@@ -148,4 +225,4 @@ public static function getAllCustomers() {
     }
 
 
-}
+}*/
