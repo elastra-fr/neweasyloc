@@ -38,13 +38,17 @@ $menu = [
     '2' => "\033[1m\033[32m[Opérations sur un client]\033[0m",
     '3' => "\033[1m\033[32m[Opérations sur les véhicules]\033[0m",
     '4' => "\033[1m\033[32m[Opérations sur les locations]\033[0m",
+    '5' => "\033[1m\033[32m[Quitter]\033[0m",
+    '6' => "\033[1m\033[32m[Retour au menu principal]\033[0m"
+    
+
     
 ];
 
 while (true) {
 
     //echo "Sélectionnez une option :\n";
-    typewriter("\n\nSélectionnez une option :\n");  
+    typewriter("\n\n>>Menu principal - Sélectionnez une option>>:\n");  
 
     foreach ($menu as $key => $value) {
         echo "{$key}. {$value}\n";
@@ -78,7 +82,7 @@ while (true) {
             ];
 
             while (true) {
-                echo "Sélectionnez une option :\n";
+                echo "Sous-menu - Opérations sur un client :\n";
                 foreach ($submenu as $key => $value) {
                     echo "{$key}. {$value}\n";
                 }
@@ -113,6 +117,23 @@ while (true) {
         case '4':
             // Retour au menu principal
             break;
+
+        case '5':
+            // Quitter l'application
+            //echo "Au revoir !\n";
+            typewriter("Au revoir !\n");
+
+            sleep(1);
+            exit(0);
+            
+        case '6':
+
+            // Retour au menu principal
+
+
+
+            break;
+
         default:
             echo "Erreur : option invalide.\n";
     }
@@ -152,7 +173,7 @@ function typewriter($text) {
 
     for ($i = 0; $i < mb_strlen($text); $i++) {
         echo "\033[1;32m" . mb_substr($text, $i, 1) . "\033[0m";
-        usleep(50000); // Suspendre l'exécution du script pendant 100 microsecondes
+        usleep(30000); // Suspendre l'exécution du script pendant 100 microsecondes
     }
 }
 
