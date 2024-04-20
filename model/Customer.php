@@ -4,9 +4,12 @@ require 'vendor/autoload.php';
 require_once 'database/MongoDb_con.php';
 require_once 'model/AbstractMongoDb.php';
 
+
 //Définition de la classe Customer avec ses getters et setters
 
-class Customer {
+
+class Customer
+{
 
     private $uid;
     private $first_name;
@@ -14,7 +17,8 @@ class Customer {
     private $address;
     private $permit_number;
 
-    public function __construct($uid, $first_name, $second_name, $address, $permit_number) {
+    public function __construct($uid, $first_name, $second_name, $address, $permit_number)
+    {
         $this->uid = $uid;
         $this->first_name = $first_name;
         $this->second_name = $second_name;
@@ -22,83 +26,114 @@ class Customer {
         $this->permit_number = $permit_number;
     }
 
-    public function getUid() {
+    public function getUid()
+    {
         return $this->uid;
     }
 
-    public function setUid($uid) {
+    public function setUid($uid)
+    {
         $this->uid = $uid;
     }
 
-    public function getFirstName() {
+    public function getFirstName()
+    {
         return $this->first_name;
     }
 
-    public function setFirstName($first_name) {
+    public function setFirstName($first_name)
+    {
         $this->first_name = $first_name;
     }
 
-    public function getSecondName() {
+    public function getSecondName()
+    {
         return $this->second_name;
     }
 
-    public function setSecondName($second_name) {
+    public function setSecondName($second_name)
+    {
         $this->second_name = $second_name;
     }
 
-    public function getAddress() {
+    public function getAddress()
+    {
         return $this->address;
     }
 
-    public function setAddress($address) {
+    public function setAddress($address)
+    {
         $this->address = $address;
     }
 
-    public function getPermitNumber() {
+    public function getPermitNumber()
+    {
         return $this->permit_number;
     }
 
-    public function setPermitNumber($permit_number) {
+    public function setPermitNumber($permit_number)
+    {
         $this->permit_number = $permit_number;
     }
-
-
-
 }
 
 //Définition de la classe CustomerModel qui hérite de la classe AbstractMongoDb
+//Cette classe permet de faire des opérations CRUD sur la collection Customer de la base de données MongoDB 
+//Elle permet également d'opérer d'autres opérations moins standard sur la collection Customer 
 
-class CustomerModel extends AbstractMongoDb{
 
-    public function __construct() {
+
+class CustomerModel extends AbstractMongoDb
+{
+
+    public function __construct()
+    {
         parent::__construct('Customer');
     }
 
 
     //Méthode pour récupérer les données de tous les clients sur mongoDB au format json
 
-    public function getAllCustomers() {
-     
+    public function getAllCustomers()
+    {
+
 
         $customers = $this->readAll();
         echo $customers;
         return $customers;
         //return $this->readAll();
-    
+
     }
 
     //Méthode pour récupérer les données d'un client par son ID sur mongoDB au format json
 
-    public function getCustomerById($uid) {
-     
+    public function getCustomerById($uid)
+    {
+        // ...
 
-        $singleCustomer = $this->readAll(['_id' => $uid]);
-        echo $singleCustomer;
-        return $singleCustomer;
-        //return $this->readAll(['_id' => $uid]);
+        ;
+        $customer = $this->readSingleById($uid);
+    
+        echo $customer;
+        return $customer;
+        //return $this->readOne($uid);
+        
 
     }
 
+    //Methode pour effacer un client par son ID
+
+    public function deleteCustomerById($uid)
+    {
+
+        
+        $customer = $this->delete($uid);
+        echo "Client effacé avec succès";
+        return $customer;
+        
+        
+
+    }
 
 
 

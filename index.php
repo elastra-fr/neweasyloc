@@ -81,8 +81,28 @@ else {
 
 require_once 'model/Customer.php';
 
+
+echo "<h2>Test liste des clients</h2>";
+
 $customers = new CustomerModel();
 $customers->getAllCustomers();
+
+
+echo "<h2>Test client par Id</h2>";
+
+
+             $singleCustomer = new CustomerModel();
+             $id='661ff60215ef346468117b7b';
+                    $singleCustomer = $singleCustomer->getCustomerById($id);
+
+
+echo "<h2>Test Effacement client par Id</h2>";
+
+$deleteCustomer = new CustomerModel();
+$idToDelete='661ff60215ef346468117b80';
+$deleteCustomer->delete($idToDelete);
+
+
 
 
 

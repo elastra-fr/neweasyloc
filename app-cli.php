@@ -8,6 +8,7 @@ typewriter("Bienvenue dans l'application de gestion EasyLoc\n\n");
 
 require_once 'database/SqlSrv_con.php';
 require_once 'database/MongoDb_con.php';
+require_once 'model/Customer.php';
 
 //Test de connexion à la base de données MongoDB
 
@@ -60,9 +61,10 @@ while (true) {
         //Option 1 : Opérations globale sur les clients
         case '1':
 
-        require_once 'model/Customer.php';
-        $customers = Customer::getAllCustomers();
-        echo $customers;
+        
+        $customers = new CustomerModel();
+        $customers = $customers->getAllCustomers();
+
             
 
 
@@ -90,12 +92,21 @@ while (true) {
 
                 switch ($subChoice) {
                     case 'a':
-                        // Code pour afficher tous les clients
-                        showAllCustomers();
+                
+                        
+        $customers = new CustomerModel();
+        $customers = $customers->getAllCustomers();
+
+
+
                         break;
                     case 'b':
                         // Code pour afficher un client par son ID
-                        showCustomerById();
+                
+                    $singleCustomer = new CustomerModel();
+                    $singleCustomer = $singleCustomer->getCustomerById('661ff60215ef346468117b7b');
+
+
                         break;
                     case 'c':
                         // Retour au menu principal

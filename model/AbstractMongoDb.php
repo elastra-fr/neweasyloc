@@ -4,15 +4,23 @@ require 'vendor/autoload.php';
 require_once 'database/MongoDb_con.php';
 
 
-//Class abstraite pour des opérations classiques sur les collections MongoDB pour peermettre la réutilisation du code pour d'autres collections
-abstract class AbstractMongoDb {
 
-//
+
+//Class abstraite pour des opérations classiques sur les collections MongoDB pour permettre la réutilisation du code pour d'autres collections MongoDB
+//Cette classe contient des méthodes pour insérer, lire, mettre à jour et supprimer des documents dans une collection MongoDB
+//Les méthodes de cette classe sont utilisées par les classes de modèle pour effectuer des opérations CRUD sur les collections MongoDB
+//Les classes de modèle héritent de cette classe pour effectuer des opérations CRUD sur les collections MongoDB
+
+abstract class AbstractMongoDb
+{
+
+    //
     protected $db;
     protected $collection;
 
-//Constructeur de la classe
-    public function __construct($collection) {
+    //Constructeur de la classe
+    public function __construct($collection)
+    {
         $mongoDBCon = new MongoDB_con();
         $this->db = $mongoDBCon->getDB();
         $this->collection = $this->db->$collection;
@@ -20,70 +28,115 @@ abstract class AbstractMongoDb {
 
     }
 
-//Méthode pour insérer un document dans une collection
-    public function create($data){
+    //********************Méthode pour insérer un document dans une collection******************
+    public function create($data)
+    {
 
-try {
+        try {
 
-$result = $this->collection->insertOne($data);
-return $result->getInsertedId();
+            $result = $this->collection->insertOne($data);
+            return $result->getInsertedId();
 
 
-}
+        } catch (Exception $e) {
 
-catch (Exception $e) {
+            return false;
 
-return false;
+        }
 
-}
+
+
+    }
+
+    //*********************Méthode pour récupérer tous les documents d'une collection avec find********************
+
+
+
+    public function readAll()
+    {
+
+
+        try {
+
+            $result = $this->collection->find();
+
+            //return to json format
+            return json_encode(iterator_to_array($result), JSON_PRETTY_PRINT);
+
+
+
+            //return $result;
+
+        } catch (Exception $e) {
+
+            return false;
+
+        }
+
+
+    }
+
+
+    //************************Méthode pour récupérer un document dans une collection par son ID avec findOne*******************
+
+    public function readSingleById($id)
+    {
+
+        try {
+
+            $filter = ['_id' => new MongoDB\BSON\ObjectID($id)];
+            $customer = $this->collection->findOne($filter);
+            return json_encode($customer, JSON_PRETTY_PRINT);
+
+
+        } catch (Exception $e) {
+
+            return false;
+
+        }
 
 
 
     }
 
-//Méthode pour récupérer tous ou partie des documents d'une collection au format json
-    
+    //***************************Méthode pour supprimer un document dans une collection par son ID avec deleteOne******************
 
-    
-    public function readAll($filter = []) {
+    public function delete($id)
+    {
 
+        try {
 
-try {
-
-    $result = $this->collection->find($filter);
-
-    //return to json format
-    return json_encode(iterator_to_array($result), JSON_PRETTY_PRINT);
-    
+            $filter = ['_id' => new MongoDB\BSON\ObjectID($id)];
+            $result = $this->collection->deleteOne($filter);
+            return true;
 
 
-    //return $result;
+        } catch (Exception $e) {
+            return false;
+        }
 
-}
 
-catch (Exception $e) {
-
-    return false;
-
-}
 
 
     }
 
-    //Méthode pour mettre à jour un document dans une collection
 
-    public function update($filter, $data) {
 
-try {
 
-$result = $this->collection->updateOne($filter, $data);
 
-}
+    //*********************************Méthode pour mettre à jour un document dans une collection par son ID avec updateOne******************
 
-catch (Exception $e) {
+    public function update($filter, $data)
+    {
 
-return false;
-}
+        try {
+
+            $result = $this->collection->updateOne($filter, $data);
+
+        } catch (Exception $e) {
+
+            return false;
+        }
 
 
     }
