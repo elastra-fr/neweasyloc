@@ -1,5 +1,6 @@
 <?php
 
+namespace App\mongo;
 require 'vendor/autoload.php';
 require_once 'database/MongoDb_con.php';
 require_once 'model/AbstractMongoDb.php';

@@ -38,7 +38,7 @@ echo "<h3>Connexion à la base de données SqlServer</h3>";
 
 
 
-$connection = new SqlSrv_con();
+$connection = new app\sqlsrv\SqlSrv_con();
 $connection->connect();
 //DAte de connexion
 $date = date("Y-m-d H:i:s");
@@ -47,7 +47,7 @@ echo "<p>Date de connexion : ".$date."</p><br>";
 
 
 echo "<h3>Connexion à la base de données Mongo</h3>";
-$connectionMdb = new MongoDB_con();
+$connectionMdb = new App\mongo\MongoDB_con();
 $connectionMdb->connect();
 
 //DAte de connexion
@@ -84,21 +84,22 @@ require_once 'model/Customer.php';
 
 echo "<h2>Test liste des clients</h2>";
 
-$customers = new CustomerModel();
+$customers = new app\mongo\CustomerModel;
 $customers->getAllCustomers();
 
 
 echo "<h2>Test client par Id</h2>";
 
 
-             $singleCustomer = new CustomerModel();
-             $id='661ff60215ef346468117b7b';
+             $singleCustomer = new app\mongo\CustomerModel();
+                    $id='661ff60215ef346468117b7b';
                     $singleCustomer = $singleCustomer->getCustomerById($id);
+ 
 
 
 echo "<h2>Test Effacement client par Id</h2>";
 
-$deleteCustomer = new CustomerModel();
+$deleteCustomer = new app\mongo\CustomerModel();
 $idToDelete='661ff60215ef346468117b80';
 $deleteCustomer->delete($idToDelete);
 

@@ -1,9 +1,10 @@
-
 <?php
+namespace App\mongo;
+use MongoDB;
+use Exception;
 
 require 'vendor/autoload.php';
 require_once 'database/MongoDb_con.php';
-
 require_once 'config/globals.php';
 
 

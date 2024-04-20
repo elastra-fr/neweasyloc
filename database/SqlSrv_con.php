@@ -1,5 +1,8 @@
 <?php
 
+namespace App\sqlsrv;
+use PDO;
+use PDOException;
 
 require_once 'config/globals.php';
 
