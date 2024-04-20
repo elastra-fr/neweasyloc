@@ -25,5 +25,7 @@ composer.phar
 
 /config/global.php
 
+#ignorer fichier todo.txt
+todo.txt
 
 

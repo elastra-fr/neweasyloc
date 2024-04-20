@@ -1,7 +1,9 @@
 <?php
 
+namespace App\sqlsrv;
 require 'vendor/autoload.php';
 require_once 'database/SqlSrv_con.php';
+use PDO;
 
 abstract class AbstractSqlSrv{
 
