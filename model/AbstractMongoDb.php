@@ -41,7 +41,7 @@ return false;
 
     }
 
-//Méthode pour récupérer tous ou partie des documents d'une collection
+//Méthode pour récupérer tous ou partie des documents d'une collection au format json
     
 
     
@@ -51,7 +51,13 @@ return false;
 try {
 
     $result = $this->collection->find($filter);
-    return $result;
+
+    //return to json format
+    return json_encode(iterator_to_array($result), JSON_PRETTY_PRINT);
+    
+
+
+    //return $result;
 
 }
 

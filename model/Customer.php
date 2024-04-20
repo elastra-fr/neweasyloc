@@ -2,6 +2,7 @@
 
 require 'vendor/autoload.php';
 require_once 'database/MongoDb_con.php';
+require_once 'model/AbstractMongoDb.php';
 
 //Définition de la classe Customer avec ses getters et setters
 
@@ -66,6 +67,43 @@ class Customer {
 }
 
 //Définition de la classe CustomerModel qui hérite de la classe AbstractMongoDb
+
+class CustomerModel extends AbstractMongoDb{
+
+    public function __construct() {
+        parent::__construct('Customer');
+    }
+
+
+    //Méthode pour récupérer les données de tous les clients sur mongoDB au format json
+
+    public function getAllCustomers() {
+     
+
+        $customers = $this->readAll();
+        echo $customers;
+        return $customers;
+        //return $this->readAll();
+    
+    }
+
+    //Méthode pour récupérer les données d'un client par son ID sur mongoDB au format json
+
+    public function getCustomerById($uid) {
+     
+
+        $singleCustomer = $this->readAll(['_id' => $uid]);
+        echo $singleCustomer;
+        return $singleCustomer;
+        //return $this->readAll(['_id' => $uid]);
+
+    }
+
+
+
+
+
+}
 
 
 

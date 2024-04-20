@@ -79,7 +79,17 @@ else {
 <section>
 <?php
 
+require_once 'model/Customer.php';
 
+$customers = new CustomerModel();
+$customers->getAllCustomers();
+
+
+
+
+
+
+/*
 require_once 'model/Customer.php';
 
 $customers = Customer::getAllCustomers();
@@ -89,7 +99,7 @@ echo "<h2>Liste des clients</h2>";
 //Affichage des clients sous forme de liste
 echo $customers;
 
-
+*/
 
 
 ?>
