@@ -11,11 +11,11 @@ use MongoDB\Database;
 use MongoDB\Driver\Manager;
 class MongoDB_conTest extends TestCase
 {
-    private MongoDB_con $mongoDBCon;
+    private App\mongo\MongoDB_con $mongoDBCon;
 
     protected function setUp(): void
     {
-        $this->mongoDBCon = new MongoDB_con('localhost', 27017);
+        $this->mongoDBCon = new App\mongo\MongoDB_con('localhost', 27017);
     }
 
     public function testConnect()

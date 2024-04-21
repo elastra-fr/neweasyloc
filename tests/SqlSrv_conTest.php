@@ -11,7 +11,7 @@ class SqlSrv_conTest extends PHPUnit\Framework\TestCase
         $pdoStub = $this->createStub(PDO::class);
         
         // Création d'une instance de SqlSrv_con
-        $sqlSrvCon = new SqlSrv_con($pdoStub);
+        $sqlSrvCon = new App\sqlsrv\SqlSrv_con($pdoStub);
         
         // Appel de la méthode connect
         $connected = $sqlSrvCon->connect();
