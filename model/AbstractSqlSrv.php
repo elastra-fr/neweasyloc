@@ -49,6 +49,33 @@ public function readSingleById($id)
     
     }
 
+//Méthode pour insérer un enregistrement dans la table
+
+public function create($data)
+{
+
+    $sql = "INSERT INTO $this->table (name, email, phone) VALUES (:name, :email, :phone)";
+    $stmt = $this->dbcon->getConnection()->prepare($sql);
+    $stmt->execute($data);
+    return $this->dbcon->getConnection()->lastInsertId();
+    
+    }
+
+//Méthode pour effacer un enregistrement par son ID
+
+public function delete($id)
+{
+
+    $sql = "DELETE FROM $this->table WHERE id = $id";
+    $stmt = $this->dbcon->getConnection()->prepare($sql);
+    $stmt->execute();
+    return true;
+    
+    }
+
+//Méthode pour mettre à jour un enregistrement dans la table
+
+
 
 
 

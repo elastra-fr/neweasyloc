@@ -22,6 +22,27 @@ class Vehicle{
 class VehicleModel extends AbstractMongoDb
 {
 
+    public function __construct()
+    {
+        parent::__construct('Vehicle');
+    }   
+
+    //Méthode pour ajouter un véhicule dans la collection vehicle
+
+
+    //Méthode pour modifier un véhicule dans la collection vehicle
+
+    //Méthode pour supprimer un véhicule dans la collection vehicle
+
+
+    //Méthode pour rechercher un véhicule par son numéro d'immatriculation dans la collection vehicle
+
+    //Méthode pour rechercher un véhicule dont le kilométrage est supérieur à un certain seuil dans la collection vehicle
+
+    //Méthode pour rechercher un véhicule dont le kilométrage est inférieur à un certain seuil dans la collection vehicle
+
+    
+
 
 
 }

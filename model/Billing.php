@@ -1,5 +1,12 @@
 <?php
 
+/* Table Billing : Contient les données de payement des contrats. Payement en plusieur fois possible.
+Champs :
+- ID ( INT - clé unique du payement)
+- Contract_id (INT - clé unique du contrat concerné par le payement)
+- Amount (MONEY - Montant payé)
+*/
+
 namespace App\sqlsrv;
 require 'vendor/autoload.php';
 require_once 'database/SqlSrv_con.php';
@@ -27,6 +34,22 @@ public function __construct() {
     parent::__construct('billing');
 
 }
+
+//Méthode pour récupérer les données de  paiement sur SQL Server au format json
+
+
+//Méthode pour récupérer les données de paiement par sa clé unique sur SQL Server au format json
+
+
+//Méthode pour insérer un paiement dans la table billing
+
+
+//Méthode pour suppimer un paiement par sa clé unique
+
+
+
+
+
 
 
 

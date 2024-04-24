@@ -1,5 +1,10 @@
 <?php
-
+/*Table Vehicle : Contient les données associées à un véhicule
+- uid (UUID - Identifiant unique du document)
+- licence_plate (CHAR(255) - Immatriculation du véhicule)
+- informations (TEXT - Notes sur le véhicule, par exemple dégradations)
+- km (INT - Kilométrage du véhicule)
+*/
 namespace App\mongo;
 require 'vendor/autoload.php';
 require_once 'database/MongoDb_con.php';
@@ -135,6 +140,14 @@ class CustomerModel extends AbstractMongoDb
         
 
     }
+
+    //Méthode pour modifier un Customer dans la collection Customer
+
+
+    //Méthode pour rechercher un client par son nom et prénom
+
+    
+
 
 
 

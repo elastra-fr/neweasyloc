@@ -80,6 +80,7 @@ else {
 <?php
 
 require_once 'model/Customer.php';
+require_once 'model/Contract.php';
 
 
 echo "<h2>Test liste des clients</h2>";
@@ -104,9 +105,10 @@ $idToDelete='661ff60215ef346468117b80';
 $deleteCustomer->delete($idToDelete);
 
 
+echo "<h2>Test table Contract</h2>";
 
-
-
+$contracts = new App\sqlsrv\ContractModel();
+$contracts->readAll();
 
 
 
