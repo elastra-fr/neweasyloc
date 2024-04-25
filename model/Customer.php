@@ -98,6 +98,10 @@ class CustomerModel extends AbstractMongoDb
     }
 
 
+
+
+
+
     //Méthode pour récupérer les données de tous les clients sur mongoDB au format json
 
     public function getAllCustomers()

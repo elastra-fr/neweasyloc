@@ -9,10 +9,12 @@ typewriter("Bienvenue dans l'application de gestion EasyLoc\n\n");
 require_once 'database/SqlSrv_con.php';
 require_once 'database/MongoDb_con.php';
 require_once 'model/Customer.php';
+require_once 'model/Contract.php';
+require_once 'model/Billing.php';
 
 //Test de connexion à la base de données MongoDB
 
-$connectionMdb = new MongoDB_con();
+$connectionMdb = new App\mongo\MongoDB_con();
 
 if ($connectionMdb->connect()) {
     typewriter("Connexion réussie à la base de données MongoDB.\n");
@@ -22,13 +24,27 @@ if ($connectionMdb->connect()) {
 
 //Test de connexion à la base de données SQL Server
 
-$connection = new SqlSrv_con();
+$connection = new App\sqlsrv\SqlSrv_con();
 
 if ($connection->connect()) {
     typewriter("Connexion réussie à la base de données SQL Server.\n");
 } else {
     typewriter("Echec de la connexion à la base de données SQL Server. Verifiez que l'extension sqlsrv est bien installée et activée sur votre version de PHP (CLI compris)\n");
 }
+
+
+//Vérifier si la table customer existe dans la base de données SQL Server et la créer si elle n'existe pas
+
+
+$contractExists= new App\sqlsrv\ContractModel();
+$contractExists->createContractTable();
+
+//Vérifier si la table Billing existe dans la base de données SQL Server et la créer si elle n'existe pas
+
+$billingExists= new App\sqlsrv\BillingModel();
+$billingExists->createBillingTable();
+
+
 
 
 
@@ -184,7 +200,7 @@ function typewriter($text) {
 
     for ($i = 0; $i < mb_strlen($text); $i++) {
         echo "\033[1;32m" . mb_substr($text, $i, 1) . "\033[0m";
-        usleep(30000); // Suspendre l'exécution du script pendant 100 microsecondes
+        usleep(10000); // Suspendre l'exécution du script pendant 100 microsecondes
     }
 }
 

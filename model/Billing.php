@@ -35,6 +35,23 @@ public function __construct() {
 
 }
 
+//Méthode pour créer la table si elle n'existe pas dans la base de données
+
+public function createBillingTable()
+{
+
+    $sql = "CREATE TABLE Billing (
+        ID INT PRIMARY KEY,
+        Contract_id INT,
+        Amount MONEY
+    )"; 
+
+    $exists=parent::tableExists('Billing', $sql);
+    return $exists;
+
+}
+
+
 //Méthode pour récupérer les données de  paiement sur SQL Server au format json
 
 

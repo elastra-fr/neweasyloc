@@ -32,10 +32,39 @@ class ContractModel extends AbstractSqlSrv{
 
 public function __construct(){
 
-parent::__construct('contract');
+parent::__construct('Contract');
 
 
 }
+
+
+//Méthode pour créer la table si elle n'existe pas dans la base de données
+
+public function createContractTable()
+{
+
+    $sql = "CREATE TABLE Contract (
+        id INT PRIMARY KEY,
+        vehicle_uid CHAR(255),
+        customer_uid CHAR(255),
+        sign_datetime DATETIME,
+        loc_begin_datetime DATETIME,
+        loc_end_datetime DATETIME,
+        returning_datetime DATETIME,
+        price MONEY
+    )";
+
+
+$exists=parent::tableExists('Contract', $sql);
+return $exists;
+
+
+
+
+
+
+}
+
 
 
 //Méthode pour récupérer les données de tous les contrats sur SQL Server au format json
