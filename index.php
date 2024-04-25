@@ -95,6 +95,24 @@ echo "<h2>Test client par Id</h2>";
              $singleCustomer = new app\mongo\CustomerModel();
                     $id='661ff60215ef346468117b7b';
                     $singleCustomer = $singleCustomer->getCustomerById($id);
+
+echo "<h2>Test client par nom</h2>";
+
+$customerByName = new app\mongo\CustomerModel();
+$firstName='Jean';
+$lastName='Dupont';
+$customerByName->searchCustomer($firstName, $lastName);
+var_dump($customerByName);
+
+
+echo "<h2>Test Ajout client</h2>";  
+/*
+$customerToAdd = new app\mongo\Customer(null, 'Jean', 'Dupont', '12 rue de la Paix', '123456789');
+$addCustomer = new app\mongo\CustomerModel();
+$addCustomer->addCustomer($customerToAdd);
+*/
+
+
  
 
 
@@ -110,6 +128,26 @@ echo "<h2>Test table Contract</h2>";
 $contracts = new App\sqlsrv\ContractModel();
 $contracts->readAll();
 
+
+echo "<h2>Test création contrat</h2>";
+
+$contractToAdd = new App\sqlsrv\Contract(null, '123', '456', '2021-06-01 12:00:00', '2021-06-01 12:00:00', '2021-06-01 12:00:00', '2021-06-01 12:00:00', 100);
+$addContract = new App\sqlsrv\ContractModel();
+$addContract->createContract($contractToAdd);
+
+echo "<h2>Test modification contrat par Id</h2>";
+
+$randomPrice = rand(1, 1000);
+$contractToUpdate = new App\sqlsrv\Contract(null, '123', '456', '2021-06-01 12:00:00', '2021-06-01 12:00:00', '2021-06-01 12:00:00', '2021-06-01 12:00:00', 200);
+$updateContract = new App\sqlsrv\ContractModel();
+$idToUpdate='1';
+$updateContract->updateContract($contractToUpdate, $idToUpdate);
+
+echo "<h2>Test effacement contrat par Id</h2>";
+
+$deleteContract = new App\sqlsrv\ContractModel();
+$idToDelete='50';
+$deleteContract->delete($idToDelete);
 
 
 /*

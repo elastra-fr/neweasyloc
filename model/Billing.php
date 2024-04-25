@@ -17,6 +17,45 @@ require_once 'database/SqlSrv_con.php';
 
 class Billing{
 
+    private $ID;
+    private $Contract_id;
+    private $Amount;
+
+    //Constructeur de la classe
+    public function __construct($ID, $Contract_id, $Amount) {
+        $this->ID = $ID;
+        $this->Contract_id = $Contract_id;
+        $this->Amount = $Amount;
+    }
+
+    public function getID() {
+        return $this->ID;
+    }
+
+    public function setID($ID) {
+        $this->ID = $ID;
+    }
+
+    public function getContract_id() {
+        return $this->Contract_id;
+    }
+
+    public function setContract_id($Contract_id) {
+        $this->Contract_id = $Contract_id;
+    }
+
+    public function getAmount() {
+        return $this->Amount;
+    }
+
+    public function setAmount($Amount) {
+        $this->Amount = $Amount;
+
+    }
+
+
+    
+
 
 
 }

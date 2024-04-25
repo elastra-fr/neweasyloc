@@ -33,22 +33,20 @@ abstract class AbstractMongoDb
     }
 
     //********************Méthode pour insérer un document dans une collection******************
+    //La méthode récupère un tableau associatif $data  et insère un document dans une collection
     public function create($data)
     {
 
-        try {
+try{
+     $insertOne=$this->collection->insertOne($data);
+        return $insertOne->getInsertedId();
+}
 
-            $result = $this->collection->insertOne($data);
-            return $result->getInsertedId();
+catch(Exception $e){
 
+    return false;
 
-        } catch (Exception $e) {
-
-            return false;
-
-        }
-
-
+}
 
     }
 
@@ -100,6 +98,25 @@ abstract class AbstractMongoDb
         }
 
 
+
+    }
+
+    //************************Méthode pour récupérer un document dans une collection par un filtre avec findOne*******************
+
+    public function readSingleByFilter($filter)
+    {
+
+        try {
+
+            $customer = $this->collection->findOne($filter);
+            return json_encode($customer, JSON_PRETTY_PRINT);
+
+            }
+
+        catch (Exception $e) {
+                
+                return false;
+        }
 
     }
 

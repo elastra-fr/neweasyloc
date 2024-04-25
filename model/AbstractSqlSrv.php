@@ -4,6 +4,7 @@ namespace App\sqlsrv;
 
 require 'vendor/autoload.php';
 require_once 'database/SqlSrv_con.php';
+use Exception;
 
 use PDO;
 
@@ -24,7 +25,7 @@ abstract class AbstractSqlSrv
         $this->table = $table;
     }
 
-    //Méthode pour checker si une table existe dans la base de données. Si elle n'existe pas, la méthode crée la table.
+    /**************************Méthode pour checker si une table existe dans la base de données. Si elle n'existe pas, la méthode crée la table.****************/
     //Cette méthode est appelée au démarrage de l'outils en ligne de commande.
 
     public function tableExists($table, $create)
@@ -83,24 +84,61 @@ $stmt = $this->dbcon->getConnection()->query($create);
     public function create($data)
     {
 
-        $sql = "INSERT INTO $this->table (name, email, phone) VALUES (:name, :email, :phone)";
+        try{
+        $sql = "INSERT INTO $this->table (";
+        $sql .= implode(", ", array_keys($data)) . ') VALUES (';
+        $sql .= ":" . implode(", :", array_keys($data)) . ')';
+
         $stmt = $this->dbcon->getConnection()->prepare($sql);
         $stmt->execute($data);
-        return $this->dbcon->getConnection()->lastInsertId();
+        return true;
+        }
+
+        catch(Exception $e){
+
+            echo "Erreur: " . $e->getMessage();
+            return false;
+
+        }
+
+  
     }
 
     //Méthode pour effacer un enregistrement par son ID
 
     public function delete($id)
     {
-
+try{
         $sql = "DELETE FROM $this->table WHERE id = $id";
         $stmt = $this->dbcon->getConnection()->prepare($sql);
         $stmt->execute();
+        echo "Contrat n°".$id." effacé avec succès\n";
         return true;
+}
+
+catch(Exception $e){
+
+echo "Erreur: " . $e->getMessage();
+return false;
+
+}
     }
 
     //Méthode pour mettre à jour un enregistrement dans la table
+
+    public function update($data, $id)
+    {
+
+
+        $sql = "UPDATE $this->table SET ";
+        $sql .= implode(" = ?, ", array_keys($data)) . ' = ?';
+        $sql .= " WHERE id = $id";
+
+        $stmt = $this->dbcon->getConnection()->prepare($sql);
+        $stmt->execute(array_values($data));
+        echo "Contrat n°".$id." mis à jour avec succès\n";
+        return true;
+    }   
 
 
 

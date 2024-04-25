@@ -1,10 +1,5 @@
 <?php
-/*Table Vehicle : Contient les données associées à un véhicule
-- uid (UUID - Identifiant unique du document)
-- licence_plate (CHAR(255) - Immatriculation du véhicule)
-- informations (TEXT - Notes sur le véhicule, par exemple dégradations)
-- km (INT - Kilométrage du véhicule)
-*/
+
 namespace App\mongo;
 require 'vendor/autoload.php';
 require_once 'database/MongoDb_con.php';
@@ -98,6 +93,24 @@ class CustomerModel extends AbstractMongoDb
     }
 
 
+//Méthode pour ajouter un client dans la collection Customer en utilisant la classe Customer
+
+public function addCustomer($customer){
+
+
+    $data = [
+        'uid' => $customer->getUid(),
+        'first_name' => $customer->getFirstName(),
+        'second_name' => $customer->getSecondName(),
+        'address' => $customer->getAddress(),
+        'permit_number' => $customer->getPermitNumber()
+    ];
+
+    $customer = parent::create($data);
+    echo "Client ajouté avec succès";
+
+
+}
 
 
 
@@ -147,8 +160,32 @@ class CustomerModel extends AbstractMongoDb
 
     //Méthode pour modifier un Customer dans la collection Customer
 
+    public function updateCustomer($customer)
+    {
+        $data = [
+            'uid' => $customer->getUid(),
+            'first_name' => $customer->getFirstName(),
+            'second_name' => $customer->getSecondName(),
+            'address' => $customer->getAddress(),
+            'permit_number' => $customer->getPermitNumber()
+        ];
+
+        $customer = parent::update($data);
+        echo "Client modifié avec succès";
+        return $customer;
+    }
+
 
     //Méthode pour rechercher un client par son nom et prénom
+
+    public function searchCustomer($first_name, $second_name)
+    {
+        $filter = ['first_name' => $first_name, 'second_name' => $second_name];
+        $customer = parent::readSingleByFilter($filter);
+        echo json_encode($customer, JSON_PRETTY_PRINT);
+        return $customer;
+    }
+
 
     
 
