@@ -150,6 +150,7 @@ $idToDelete='50';
 $deleteContract->delete($idToDelete);
 
 
+
 /*
 require_once 'model/Customer.php';
 

@@ -8,6 +8,7 @@ require_once 'database/MongoDb_con.php';
 require_once 'config/globals.php';
 
 
+
 class MongoDB_con {
 
     private $mongoClient;
@@ -31,10 +32,16 @@ public function connect() {
        // echo "Connexion réussie !";
         return true;
     }
+
+
     //echo "Echec de la connexion";
     return false;   }
 
 
+
+
+
 }
+
 
 ?>

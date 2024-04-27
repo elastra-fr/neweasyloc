@@ -5,15 +5,22 @@ namespace App\sqlsrv;
 require 'vendor/autoload.php';
 require_once 'database/SqlSrv_con.php';
 use Exception;
-
 use PDO;
+
+
+//Classe abstraite pour des opérations classiques sur les tables SQL Server pour permettre la réutilisation du code pour d'autres tables SQL Server
+//Cette classe contient des méthodes pour insérer, lire, mettre à jour et supprimer des enregistrements dans une table SQL Server
+//Les méthodes de cette classe sont utilisées par les classes de modèle pour effectuer des opérations CRUD sur les tables SQL Server
+//Les classes de modèle héritent de cette classe pour effectuer des opérations CRUD sur les tables SQL Server
 
 abstract class AbstractSqlSrv
 {
 
+//Attributs de la classe 
     protected $table;
     protected $dbcon;
 
+//Constructeur de la classe
     public function __construct($table)
     {
 
@@ -56,7 +63,7 @@ $stmt = $this->dbcon->getConnection()->query($create);
     }
 
 
-    //Méthode pour récupérer tous les enregistrements de la table au format json
+    /******************Méthode pour récupérer tous les enregistrements de la table au format json*****************/
 
 
     public function readAll()
@@ -68,7 +75,7 @@ $stmt = $this->dbcon->getConnection()->query($create);
         return json_encode($result, JSON_PRETTY_PRINT);
     }
 
-    //Méthode pour récupérer un enregistrement par son ID au format json
+    /**************************Méthode pour récupérer un enregistrement par son ID au format json*****************/
 
     public function readSingleById($id)
     {
@@ -79,7 +86,7 @@ $stmt = $this->dbcon->getConnection()->query($create);
         return json_encode($result, JSON_PRETTY_PRINT);
     }
 
-    //Méthode pour insérer un enregistrement dans la table
+    /**************************Méthode pour insérer un enregistrement dans la table*****************/
 
     public function create($data)
     {
@@ -104,7 +111,7 @@ $stmt = $this->dbcon->getConnection()->query($create);
   
     }
 
-    //Méthode pour effacer un enregistrement par son ID
+    /***************************Méthode pour effacer un enregistrement par son ID******************/
 
     public function delete($id)
     {
@@ -124,7 +131,7 @@ return false;
 }
     }
 
-    //Méthode pour mettre à jour un enregistrement dans la table
+    /********************************Méthode pour mettre à jour un enregistrement dans la table******************/
 
     public function update($data, $id)
     {

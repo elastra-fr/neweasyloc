@@ -17,6 +17,8 @@ require_once 'database/SqlSrv_con.php';
 
 class Billing{
 
+
+//Attributs de la classe
     private $ID;
     private $Contract_id;
     private $Amount;
@@ -28,6 +30,8 @@ class Billing{
         $this->Amount = $Amount;
     }
 
+
+    //Getters et setters
     public function getID() {
         return $this->ID;
     }
@@ -66,15 +70,20 @@ class Billing{
 //Elle hérite de la classe AbstractSqlSrv pour réutiliser les méthodes de cette classe pour effectuer des opérations CRUD sur la table billing
 //Elle contient également des méthodes pour effectuer des opérations moins standard sur la table billing
 
+
+
 class BillingModel extends AbstractSqlSrv
 {
 
+
+//Constructeur de la classe
 public function __construct() {
     parent::__construct('billing');
 
 }
 
 //Méthode pour créer la table si elle n'existe pas dans la base de données
+//La méthode est appelée au démarrage de l'outil en ligne de commande
 
 public function createBillingTable()
 {
