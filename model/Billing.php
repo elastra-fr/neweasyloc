@@ -82,7 +82,7 @@ public function __construct() {
 
 }
 
-//Méthode pour créer la table si elle n'existe pas dans la base de données
+/******************Méthode pour créer la table si elle n'existe pas dans la base de données******************/
 //La méthode est appelée au démarrage de l'outil en ligne de commande
 
 public function createBillingTable()
@@ -94,22 +94,78 @@ public function createBillingTable()
         Amount MONEY
     )"; 
 
+//Appel de la méthode tableExists de la classe parent pour vérifier si la table existe déjà et la créer si elle n'existe pas
     $exists=parent::tableExists('Billing', $sql);
     return $exists;
 
 }
 
 
-//Méthode pour récupérer les données de  paiement sur SQL Server au format json
+//Méthode pour récupérer les données de  paiement sur SQL Server au format json en utilisant la méthode readAll de la classe parent
+
+public function getAllBilling()
+{
+
+    //Appel de la méthode readAll de la classe parent pour récupérer les données de paiement
+    return parent::readAll();
+
+}
 
 
-//Méthode pour récupérer les données de paiement par sa clé unique sur SQL Server au format json
+//Méthode pour récupérer les données de paiement par filtres sur SQL Server au format json
+
+public function getBillingById($id)
+{
+
+    $filter = "ID = $id";
+
+    //Appel de la méthode readByFilter de la classe parent pour récupérer les données de paiement par filtres
+    $singleBilling= parent::readSingleByFilter($filter);
+    echo $singleBilling;
+    return $singleBilling;
+
+}   
+
+/************************Méthode pour ajouter un paiement dans la table billing en utilisant la classe Billing**********************/
+
+public function addBilling($billing)
+{
+
+    $data = [
+        'ID' => $billing->getID(),
+        'Contract_id' => $billing->getContract_id(),
+        'Amount' => $billing->getAmount()
+    ];
+
+    //Appel de la méthode create de la classe parent pour insérer un paiement dans la table billing
+    $billing = parent::create($data);
+    echo "Paiement ajouté avec succès";
+
+}
 
 
-//Méthode pour insérer un paiement dans la table billing
+/**************************Methode pour modifier des données de paiment****************************** */
 
 
-//Méthode pour suppimer un paiement par sa clé unique
+public function updateBilling($id, $data)
+{
+
+    //Appel de la méthode update de la classe parent pour modifier les données de paiement
+    $update = parent::update($id, $data);
+    echo "Paiement modifié avec succès";
+
+}
+
+/**************************Méthode pour suppimer un paiement par sa clé unique****************************** */
+
+public function deleteBilling($id)
+{
+
+    //Appel de la méthode delete de la classe parent pour supprimer un paiement par sa clé unique
+    $delete = parent::delete($id);
+    echo "Paiement supprimé avec succès";
+
+}
 
 
 

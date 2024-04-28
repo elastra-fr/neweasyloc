@@ -128,6 +128,11 @@ echo "<h2>Test table Contract</h2>";
 $contracts = new App\sqlsrv\ContractModel();
 $contracts->readAll();
 
+echo "<h2>Test contrat par Id</h2>";
+$contractById = new App\sqlsrv\ContractModel(); 
+$id='1';
+$contractById->readSingleById($id);
+
 
 echo "<h2>Test création contrat</h2>";
 

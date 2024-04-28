@@ -10,6 +10,8 @@ Activation des extensions dans les fichier php.ini. Ne pas oublier l'activation 
 ## Outils en ligne de commande
 Le projet contient un outils en ligne de commande qui va vérifier les connexions aux bases de données, créer les tables Contract et Billing si elles n’existent pas et permettre de tester les fonctionnalités de la bibliothèque.
 
+Pour utiliser l'outils : php app-cli.php
+
 
 ## Architecture générales
 
@@ -31,6 +33,11 @@ Ce fichier n'est pas repris dans le repository sur GitHub.
 
 Le projet utilise des namespaces pour organiser le code et éviter les collisions de noms.
 
+Il a été choisi de limiter l'abstraction pour chaque SGDB pour tenir compte des spécificités de chaque système, en gardant un code compréhensible et maintenable . Un niveau d'abstraction supérieur aurait été possible en regroupant par type de SGBD (SQL et noSQL) mais cela obligerait à rendre générique le code en complexifiant l'utilisation des fonctions spécifiques de chaques bases.
+
+## Sécurité 
+
+Dans les classes abstraites utilisation des marqueurs de position pour les paramètres de la requête SQL et échappe echappement des valeurs des paramètres avant de les utiliser dans la requête, ce qui permet de prévenir les injections SQL en séparant la structure de la requête des données fournies par l'utilisateur.
 
 
 

@@ -117,6 +117,8 @@ class Contract {
 
 class ContractModel extends AbstractSqlSrv{
 
+//Constructeur de la classe
+
 public function __construct(){
 
 parent::__construct('Contract');
@@ -125,7 +127,7 @@ parent::__construct('Contract');
 }
 
 
-//Méthode pour créer la table si elle n'existe pas dans la base de données
+/********************************Méthode pour créer la table si elle n'existe pas dans la base de données**************/
 
 public function createContractTable()
 {
@@ -141,7 +143,7 @@ public function createContractTable()
         price MONEY
     )";
 
-
+//Utilisation de la méthode tableExists de la classe parent pour vérifier si la table existe déjà dans la base de données et la créer si elle n'existe pas
 $exists=parent::tableExists('Contract', $sql);
 return $exists;
 
@@ -150,7 +152,7 @@ return $exists;
 
 
 
-//Méthode pour récupérer les données de tous les contrats sur SQL Server au format json
+/*******************Méthode pour récupérer les données de tous les contrats sur SQL Server au format json*******************/
 public function readAll()
 {
     $contrats = parent::readAll();
@@ -160,19 +162,24 @@ public function readAll()
     }
 
 
-//Méthode pour récupérer les données d'un contrat par sa clé unique sur SQL Server au format json
+/**********************Méthode pour récupérer les données d'un contrat par sa clé unique sur SQL Server au format json*/
+
+
 
 public function readSingleById($id)
 {
-    $contrat = parent::readSingleById($id);
+//Filtrer les données par id    
+$filter = "id =$id";
+
+//Utilisation de la méthode readSingleByFilter de la classe parent pour récupérer les données du contrat filtrées par id
+    $contrat = parent::readSingleByFilter($filter);
     echo $contrat;
-    return $contrat;
     
     }
 
 
 
-//Méthode pour insérer un contrat dans la table contract
+//Méthode pour insérer un contrat dans la table contract à la date actuelle ou à une date passée en paramètre
 
 public function createContract($contract)
 {
@@ -186,13 +193,10 @@ public function createContract($contract)
         'price' => $contract->getPrice()
     ];
     
-//var_dump($data);
+//Utilisation de la méthode create de la classe parent pour insérer les données du contrat dans la table contract
     $toInsert=parent::create($data);
     return $toInsert;
 
-
-    //$insertOne=parent::create($data);
-    //return $insertOne;
     
     }   
 
@@ -224,9 +228,13 @@ public function updateContract($contract, $id)
 
 //Méthode pour effacer un contrat par sa clé unique
 
-public function deleteContract($id)
+public function deleteContract($id){
+
+ 
+$filter = "id =$id";
+
 {
-    $toDelete=parent::delete($id);
+    $toDelete=parent::delete($filter);
     return $toDelete;
     
     }
@@ -238,4 +246,5 @@ public function deleteContract($id)
 
 
 
+}
 }

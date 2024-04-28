@@ -1,16 +1,15 @@
 <?php
 
-typewriter("\nVault-Tec Systems  v.0.7.7\n\n");
-typewriter("Bienvenue dans l'application de gestion EasyLoc\n\n");
-
-
-
+/**Cette application lignes de commande permet de tester les fonctionnalités de la bibliothèque d'accès aux données */
 
 require_once 'database/SqlSrv_con.php';
 require_once 'database/MongoDb_con.php';
 require_once 'model/Customer.php';
 require_once 'model/Contract.php';
 require_once 'model/Billing.php';
+
+typewriter("\nVault-Tec Systems  v.0.7.7\n\n");
+typewriter("Bienvenue dans l'application de gestion EasyLoc\n\n");
 
 //Test de connexion à la base de données MongoDB
 
@@ -36,17 +35,13 @@ if ($connection->connect()) {
 //Vérifier si la table customer existe dans la base de données SQL Server et la créer si elle n'existe pas
 
 
-$contractExists= new App\sqlsrv\ContractModel();
+$contractExists = new App\sqlsrv\ContractModel();
 $contractExists->createContractTable();
 
 //Vérifier si la table Billing existe dans la base de données SQL Server et la créer si elle n'existe pas
 
-$billingExists= new App\sqlsrv\BillingModel();
+$billingExists = new App\sqlsrv\BillingModel();
 $billingExists->createBillingTable();
-
-
-
-
 
 
 
@@ -57,15 +52,15 @@ $menu = [
     '4' => "\033[1m\033[32m[Opérations sur les locations]\033[0m",
     '5' => "\033[1m\033[32m[Quitter]\033[0m",
     '6' => "\033[1m\033[32m[Retour au menu principal]\033[0m"
-    
 
-    
+
+
 ];
 
 while (true) {
 
     //echo "Sélectionnez une option :\n";
-    typewriter("\n\n>>Menu principal - Sélectionnez une option>>:\n");  
+    typewriter("\n\n>>Menu principal - Sélectionnez une option>>:\n");
 
     foreach ($menu as $key => $value) {
         echo "{$key}. {$value}\n";
@@ -74,14 +69,14 @@ while (true) {
 
     switch ($choice) {
 
-        //Option 1 : Opérations globale sur les clients
+            //Option 1 : Opérations globale sur les clients
         case '1':
 
-        
-        $customers = new CustomerModel();
-        $customers = $customers->getAllCustomers();
 
-            
+            $customers = new CustomerModel();
+            $customers = $customers->getAllCustomers();
+
+
 
 
 
@@ -90,7 +85,7 @@ while (true) {
 
             break;
 
-        //Option 2 : Opérations sur un client
+            //Option 2 : Opérations sur un client
         case '2':
             // Sous-menu pour afficher les clients
             $submenu = [
@@ -108,19 +103,19 @@ while (true) {
 
                 switch ($subChoice) {
                     case 'a':
-                
-                        
-        $customers = new CustomerModel();
-        $customers = $customers->getAllCustomers();
+
+
+                        $customers = new CustomerModel();
+                        $customers = $customers->getAllCustomers();
 
 
 
                         break;
                     case 'b':
                         // Code pour afficher un client par son ID
-                
-                    $singleCustomer = new CustomerModel();
-                    $singleCustomer = $singleCustomer->getCustomerById('661ff60215ef346468117b7b');
+
+                        $singleCustomer = new CustomerModel();
+                        $singleCustomer = $singleCustomer->getCustomerById('661ff60215ef346468117b7b');
 
 
                         break;
@@ -140,7 +135,7 @@ while (true) {
             echo "Au revoir !\n";
             sleep(1);
             exit(0);
-           // break;
+            // break;
         case '4':
             // Retour au menu principal
             break;
@@ -152,7 +147,7 @@ while (true) {
 
             sleep(1);
             exit(0);
-            
+
         case '6':
 
             // Retour au menu principal
@@ -195,7 +190,8 @@ function showCustomerById()
     echo "Le client a été affiché.\n";
     return; // Sortir de la fonction et revenir au menu principal
 }
-function typewriter($text) {
+function typewriter($text)
+{
     $text = mb_convert_encoding($text, 'UTF-8');
 
     for ($i = 0; $i < mb_strlen($text); $i++) {
@@ -203,4 +199,3 @@ function typewriter($text) {
         usleep(10000); // Suspendre l'exécution du script pendant 100 microsecondes
     }
 }
-
