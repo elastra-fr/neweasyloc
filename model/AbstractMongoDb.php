@@ -44,6 +44,7 @@ try{
 
 catch(Exception $e){
 
+    echo "Erreur lors de l'insertion du document :".$e->getMessage();
     return false;
 
 }
@@ -71,6 +72,8 @@ catch(Exception $e){
 
         } catch (Exception $e) {
 
+            echo "Erreur lors de la récupération des documents :".$e->getMessage();
+
             return false;
 
         }
@@ -93,6 +96,8 @@ catch(Exception $e){
 
         } catch (Exception $e) {
 
+            echo "Erreur lors de la récupération du document :".$e->getMessage();
+
             return false;
 
         }
@@ -114,6 +119,7 @@ catch(Exception $e){
             }
 
         catch (Exception $e) {
+            echo "Erreur lors de la récupération du document :".$e->getMessage();
                 
                 return false;
         }
@@ -133,6 +139,7 @@ catch(Exception $e){
 
 
         } catch (Exception $e) {
+            echo "Erreur lors de la suppression du document :".$e->getMessage();
             return false;
         }
 
