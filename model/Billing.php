@@ -120,7 +120,7 @@ public function getBillingById($id)
     $filter = "ID = $id";
 
     //Appel de la méthode readByFilter de la classe parent pour récupérer les données de paiement par filtres
-    $singleBilling= parent::readSingleByFilter($filter);
+    $singleBilling= parent::readByFilter($filter);
     echo $singleBilling;
     return $singleBilling;
 
@@ -167,15 +167,21 @@ public function deleteBilling($id)
 
 }
 
+/***************Méthode pour récupérer tous les paiments d'un contrat par son ID sur SQL Server au format json**************** */
 
+public function getBillingByContractId($id)
+{
 
+    $filter = "Contract_id = $id";
 
-
-
-
-
+    //Appel de la méthode readByFilter de la classe parent pour récupérer les données de paiement par filtres
+    $billing= parent::readByFilter($filter);
+    echo $billing;
+    return $billing;
 
 
 }
 
+
+}
 

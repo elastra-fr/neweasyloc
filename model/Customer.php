@@ -11,13 +11,14 @@ require_once 'model/AbstractMongoDb.php';
 
 class Customer
 {
-
+//Attributs de la classe
     private $uid;
     private $first_name;
     private $second_name;
     private $address;
     private $permit_number;
 
+    //Constructeur de la classe
     public function __construct($uid, $first_name, $second_name, $address, $permit_number)
     {
         $this->uid = $uid;
@@ -27,6 +28,7 @@ class Customer
         $this->permit_number = $permit_number;
     }
 
+    //Mise en place des getters et setters
     public function getUid()
     {
         return $this->uid;
@@ -87,13 +89,14 @@ class Customer
 class CustomerModel extends AbstractMongoDb
 {
 
+//Constructeur de la classe
     public function __construct()
     {
         parent::__construct('Customer');
     }
 
 
-//Méthode pour ajouter un client dans la collection Customer en utilisant la classe Customer
+/*****************Méthode pour ajouter un client dans la collection Customer en utilisant la classe Customer*****************/
 
 public function addCustomer($customer){
 
@@ -106,6 +109,7 @@ public function addCustomer($customer){
         'permit_number' => $customer->getPermitNumber()
     ];
 
+//Appel de la méthode create de la classe AbstractMongoDb pour insérer un document dans la collection Customer
     $customer = parent::create($data);
     echo "Client ajouté avec succès";
 
@@ -113,30 +117,30 @@ public function addCustomer($customer){
 }
 
 
-
-
-    //Méthode pour récupérer les données de tous les clients sur mongoDB au format json
+/******************Méthode pour récupérer les données de tous les clients sur mongoDB au format json*****************/
 
     public function getAllCustomers()
     {
 
 
-        $customers = $this->readAll();
+        //$customers = $this->readAll();
+        //Utilisation de la méthode readAll de la classe parent pour récupérer les données de tous les clients
+        $customers = parent::readAll();
         echo $customers;
         return $customers;
         //return $this->readAll();
 
     }
 
-    //Méthode pour récupérer les données d'un client par son ID sur mongoDB au format json
+    /*****************Méthode pour récupérer les données d'un client par son ID sur mongoDB au format json*****************/
 
     public function getCustomerById($uid)
     {
-        // ...
+        
 
-        ;
-        $customer = $this->readSingleById($uid);
-    
+        //$customer = $this->readSingleById($uid);
+        //Utilisation de la méthode readSingleById de la classe parent pour récupérer les données d'un client par son ID
+        $customer = parent::readSingleById($uid);
         echo $customer;
         return $customer;
         //return $this->readOne($uid);
@@ -144,13 +148,14 @@ public function addCustomer($customer){
 
     }
 
-    //Methode pour effacer un client par son ID
+    /*************************Methode pour effacer un client par son ID*************************************/
 
     public function deleteCustomerById($uid)
     {
 
-        
-        $customer = $this->delete($uid);
+        //Utilisation de la méthode delete de la classe parent pour effacer un client par son ID
+        //$customer = $this->delete($uid);
+        $customer = parent::delete($uid);
         echo "Client effacé avec succès";
         return $customer;
         
@@ -158,25 +163,27 @@ public function addCustomer($customer){
 
     }
 
-    //Méthode pour modifier un Customer dans la collection Customer
+    /******************Méthode pour modifier un Customer dans la collection Customer*****************/
 
     public function updateCustomer($customer)
     {
         $data = [
-            'uid' => $customer->getUid(),
             'first_name' => $customer->getFirstName(),
             'second_name' => $customer->getSecondName(),
             'address' => $customer->getAddress(),
             'permit_number' => $customer->getPermitNumber()
         ];
 
-        $customer = parent::update($data);
+            $filter = ['uid' => $customer->getUid()];   
+
+//Appel de la méthode update de la classe AbstractMongoDb pour modifier un document dans la collection Customer
+        $customer = parent::update($filter, $data);
         echo "Client modifié avec succès";
         return $customer;
     }
 
 
-    //Méthode pour rechercher un client par son nom et prénom
+    /*************************Méthode pour rechercher un client par son nom et prénom*************************************/
 
     public function searchCustomer($first_name, $second_name)
     {

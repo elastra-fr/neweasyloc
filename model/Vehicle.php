@@ -1,13 +1,70 @@
 <?php
 
-namespace App\mongo;
+/*
+Table Vehicle : Contient les données associées à un véhicule
+- uid (UUID - Identifiant unique du document)
+- licence_plate (CHAR(255) - Immatriculation du véhicule)
+- informations (TEXT - Notes sur le véhicule, par exemple dégradations)
+- km (INT - Kilométrage du véhicule)
+*/
 
+namespace App\mongo;
 require 'vendor/autoload.php';
 require_once 'database/MongoDb_con.php';
 
 
 //Définition de la classe Vehicle avec ses getters et setters
 class Vehicle{
+
+    //Attributs de la classe
+    private $uid;
+    private $licence_plate;
+    private $informations;
+    private $km;
+
+    //Constructeur de la classe
+    public function __construct($uid, $licence_plate, $informations, $km) {
+        $this->uid = $uid;
+        $this->licence_plate = $licence_plate;
+        $this->informations = $informations;
+        $this->km = $km;
+    }
+
+    //Getters et setters
+
+    public function getUid() {
+        return $this->uid;
+    }
+
+    public function setUid($uid) {
+        $this->uid = $uid;
+    }
+
+    public function getLicence_plate() {
+        return $this->licence_plate;
+    }
+
+    public function setLicence_plate($licence_plate) {
+        $this->licence_plate = $licence_plate;
+    }
+
+    public function getInformations() {
+        return $this->informations;
+    }
+
+    public function setInformations($informations) {
+        $this->informations = $informations;
+    }
+
+    public function getKm() {
+        return $this->km;
+    }
+
+    public function setKm($km) {
+        $this->km = $km;
+    }
+
+
 
 
 
@@ -27,20 +84,69 @@ class VehicleModel extends AbstractMongoDb
         parent::__construct('Vehicle');
     }   
 
-    //Méthode pour ajouter un véhicule dans la collection vehicle
+    /***************Méthode pour ajouter un véhicule dans la collection vehicle*********************/
+
+    public function addVehicle($vehicle){
+        $data = [
+            'uid' => $vehicle->getUid(),
+            'licence_plate' => $vehicle->getLicence_plate(),
+            'informations' => $vehicle->getInformations(),
+            'km' => $vehicle->getKm()
+        ];
+
+        //Appel de la méthode create de la classe AbstractMongoDb pour insérer un document dans la collection vehicle
+        $newVehicle= parent::create($data);
+        return $newVehicle;
+    }
 
 
-    //Méthode pour modifier un véhicule dans la collection vehicle
+    /*********************Méthode pour modifier un véhicule dans la collection vehicle*******************/
 
-    //Méthode pour supprimer un véhicule dans la collection vehicle
+    public function updateVehicle($vehicle){
+        $data = [
+            'licence_plate' => $vehicle->getLicence_plate(),
+            'informations' => $vehicle->getInformations(),
+            'km' => $vehicle->getKm()
+        ];
+
+        $filter = ['uid' => $vehicle->getUid()];    
+
+        //Appel de la méthode update de la classe AbstractMongoDb pour mettre à jour un document dans la collection vehicle
+        $updateVehicle= parent::update($filter, $data);
+        return $updateVehicle;
+    }
+
+    /***********************Méthode pour supprimer un véhicule dans la collection vehicle*******************/
+
+    public function deleteVehicle($uid){
+        //Appel de la méthode delete de la classe AbstractMongoDb pour supprimer un document dans la collection vehicle
+        $deleteVehicle= parent::delete($uid);
+        return $deleteVehicle;
+    }
 
 
-    //Méthode pour rechercher un véhicule par son numéro d'immatriculation dans la collection vehicle
+    /**********************Méthode pour rechercher un véhicule par son numéro d'immatriculation dans la collection vehicle*******************/
 
+    public function searchVehicleByLicencePlate($licence_plate){
+        //Appel de la méthode read de la classe AbstractMongoDb pour récupérer tous les documents de la collection vehicle
+        $vehicle= parent::readSingleByFilter(['licence_plate' => $licence_plate]);
+        return $vehicle;
+    }
     //Méthode pour rechercher un véhicule dont le kilométrage est supérieur à un certain seuil dans la collection vehicle
+
+    public function searchVehicleByKmGreaterThan($km){
+        //Appel de la méthode read de la classe AbstractMongoDb pour récupérer tous les documents de la collection vehicle
+        $vehicle= parent::readSingleByFilter(['km' => $km]);
+        return $vehicle;
+    }
 
     //Méthode pour rechercher un véhicule dont le kilométrage est inférieur à un certain seuil dans la collection vehicle
 
+    public function searchVehicleByKmLessThan($km){
+        //Appel de la méthode read de la classe AbstractMongoDb pour récupérer tous les documents de la collection vehicle
+        $vehicle= parent::readSingleByFilter(['km' => ['$lt' => $km]]);
+        return $vehicle;
+    }
     
 
 

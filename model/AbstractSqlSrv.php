@@ -77,7 +77,7 @@ $stmt = $this->dbcon->getConnection()->query($create);
 
     /*******************************Méthode pour récupérer un enregistrement par filtre au format json*****************/
 
-    public function readSingleByFilter($filter)
+    public function readByFilter($filter)
     {
         //Désinféction du filtre
 

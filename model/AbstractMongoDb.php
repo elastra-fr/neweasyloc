@@ -1,5 +1,7 @@
 <?php
+
 namespace App\mongo;
+
 use MongoDB;
 use Exception;
 
@@ -28,8 +30,6 @@ abstract class AbstractMongoDb
         $mongoDBCon = new MongoDB_con();
         $this->db = $mongoDBCon->getDB();
         $this->collection = $this->db->$collection;
-
-
     }
 
     //********************Méthode pour insérer un document dans une collection******************
@@ -37,18 +37,14 @@ abstract class AbstractMongoDb
     public function create($data)
     {
 
-try{
-     $insertOne=$this->collection->insertOne($data);
-        return $insertOne->getInsertedId();
-}
+        try {
+            $insertOne = $this->collection->insertOne($data);
+            return $insertOne->getInsertedId();
+        } catch (Exception $e) {
 
-catch(Exception $e){
-
-    echo "Erreur lors de l'insertion du document :".$e->getMessage();
-    return false;
-
-}
-
+            echo "Erreur lors de l'insertion du document :" . $e->getMessage();
+            return false;
+        }
     }
 
     //*********************Méthode pour récupérer tous les documents d'une collection avec find********************
@@ -72,13 +68,10 @@ catch(Exception $e){
 
         } catch (Exception $e) {
 
-            echo "Erreur lors de la récupération des documents :".$e->getMessage();
+            echo "Erreur lors de la récupération des documents :" . $e->getMessage();
 
             return false;
-
         }
-
-
     }
 
 
@@ -92,18 +85,12 @@ catch(Exception $e){
             $filter = ['_id' => new MongoDB\BSON\ObjectID($id)];
             $customer = $this->collection->findOne($filter);
             return json_encode($customer, JSON_PRETTY_PRINT);
-
-
         } catch (Exception $e) {
 
-            echo "Erreur lors de la récupération du document :".$e->getMessage();
+            echo "Erreur lors de la récupération du document :" . $e->getMessage();
 
             return false;
-
         }
-
-
-
     }
 
     //************************Méthode pour récupérer un document dans une collection par un filtre avec findOne*******************
@@ -115,15 +102,11 @@ catch(Exception $e){
 
             $customer = $this->collection->findOne($filter);
             return json_encode($customer, JSON_PRETTY_PRINT);
+        } catch (Exception $e) {
+            echo "Erreur lors de la récupération du document :" . $e->getMessage();
 
-            }
-
-        catch (Exception $e) {
-            echo "Erreur lors de la récupération du document :".$e->getMessage();
-                
-                return false;
+            return false;
         }
-
     }
 
     //***************************Méthode pour supprimer un document dans une collection par son ID avec deleteOne******************
@@ -136,16 +119,10 @@ catch(Exception $e){
             $filter = ['_id' => new MongoDB\BSON\ObjectID($id)];
             $result = $this->collection->deleteOne($filter);
             return true;
-
-
         } catch (Exception $e) {
-            echo "Erreur lors de la suppression du document :".$e->getMessage();
+            echo "Erreur lors de la suppression du document :" . $e->getMessage();
             return false;
         }
-
-
-
-
     }
 
 
@@ -160,18 +137,10 @@ catch(Exception $e){
         try {
 
             $result = $this->collection->updateOne($filter, $data);
-
         } catch (Exception $e) {
 
+            echo "Erreur lors de la mise à jour du document :" . $e->getMessage();
             return false;
         }
-
-
     }
-
-
-
-
-
-
 }
