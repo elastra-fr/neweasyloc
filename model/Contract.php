@@ -288,7 +288,71 @@ class ContractModel extends AbstractSqlSrv
 
         //Utilisation de la mé
 
-        $lateContracts = parent::readByFilter($filters);
+        $lateContracts = parent::readByFilter($filters, null);
         return $lateContracts;
     }
+
+
+    /********************************** Méthode pour compter le nombre de retard entre deux dates**********************************/
+
+    public function getNbDelayBetweenDates(){
+
+$where ="";
+
+$delays=parent::readByFilter($where, null);
+return $delays;
+
+
+    }
+
+
+/*****************************************Méthode pour obtenir le nombre de retard moyen par client **********************************/
+
+public function getAvgDelayByCustomer(){
+
+
+
+
+
+}
+
+
+
+
+/******************************************Méthode pour obtenir la liste des contrats pour un véhicule donné*************************/
+
+
+
+
+
+/********************************************Récupérer tous les contrats triés par client*************************************************/
+
+public function getAllContractsSortByUser(){
+
+$filter="ORDER BY 'customer_uid'";
+
+$contracts=parent::readByFilter(null, $filter);
+return $contracts;
+
+
+
+}
+
+
+
+/*********************************************Récupérer tous les contrats tris par véhicules **********************************************/
+
+public function getAllContractsSortByVehicle($vehicle)
+{
+
+$filter="ORDER BY ''vehicle_uid";
+
+$contracts=parent::readByFilter($filter);
+return $contracts;
+
+
+}
+
+
+
 }

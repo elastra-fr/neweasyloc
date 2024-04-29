@@ -1,4 +1,10 @@
 <?php
+/*Table Customer : Contient les données clients
+- uid (UUID - Identifiant unique du document)
+- first_name (CHAR(255) - Nom)
+- second_name (CHAR(255) - Prénom)
+- address (CHAR(255) - Adresse complète)
+- permit_number (CHAR(255) -numéro de permis)*/
 
 namespace App\mongo;
 require 'vendor/autoload.php';

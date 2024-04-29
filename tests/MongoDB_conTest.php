@@ -23,10 +23,10 @@ class MongoDB_conTest extends TestCase
     public function testConnect()
     {
         $client = new Client("mongodb://localhost:27017");
-        $this->assertInstanceOf(Client::class, $client);
+        $this->assertInstanceOf(Client::class, $client, 'Client doit retourner une instance de MongoDB\Client');
 
         $db = $this->mongoDBCon->getDB();
-        $this->assertInstanceOf(\MongoDB\Database::class, $db);
+        $this->assertInstanceOf(\MongoDB\Database::class, $db, 'getDB doit retourner une instance de MongoDB\Database');
     }
 }
 

@@ -1,10 +1,22 @@
 <?php
 
 namespace App\sqlsrv;
+use App\mongo;
+use App\mongo\CustomerModel;
+use App\sqlsrv\Customer;
+
 require 'vendor/autoload.php';
 require_once 'database/SqlSrv_con.php';
+require_once 'model/AbstractMongoDb.php';
 require_once 'model/AbstractSqlSrv.php';
+require_once 'model/AbstractMongoDB.php';
+require_once 'model/Customer.php';
+
+
+
+
 use PDO;
+
 
 class ContractPaid extends AbstractSqlSrv
 {
@@ -85,7 +97,37 @@ public function isContractPaid($contractId)
 
     /************************Méthode pour lister toutes les locations impayées ***************************/
 
-       public function getUnpaidContracts()
+       
+
+//Recoupement avec la base customer
+
+public function getUnpaidContractsWithCustomerData()
+    {
+        // Récupérez les données de paiement pour tous les contrats de location impayés
+        $unpaidContracts = $this->getUnpaidContracts();
+        $unpaidContracts = json_decode($unpaidContracts, true);
+
+        // Récupérez les données du client pour chaque contrat impayé depuis MongoDB
+        $contractsWithCustomerData = [];
+        foreach ($unpaidContracts as $contract) {
+            // Récupérez les données du client depuis MongoDB en utilisant l'ID du client
+                    $id = $contract['CustomerId'];
+                 
+            $customer = new CustomerModel();
+                     $customer = $customer->getCustomerById($id);
+
+            // Ajoutez les données du client au tableau de contrats impayés
+            $contract['CustomerName'] = $customer['first_name'];
+            $contract['CustomerLast'] = $customer['second_name'];
+            $contractsWithCustomerData[] = $contract;
+        }
+
+        // Retournez les résultats au format JSON
+        return json_encode($contractsWithCustomerData, JSON_PRETTY_PRINT);
+    }
+
+
+public function getUnpaidContracts()
     {
         // Requête SQL pour récupérer les données de paiement pour tous les contrats de location impayés
         $sql = "
@@ -107,7 +149,9 @@ public function isContractPaid($contractId)
         // Retournez les résultats au format JSON
         return json_encode($result, JSON_PRETTY_PRINT);
     }
+
  
+    
 
 
 }

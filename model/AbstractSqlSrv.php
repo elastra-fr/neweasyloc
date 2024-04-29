@@ -77,12 +77,16 @@ $stmt = $this->dbcon->getConnection()->query($create);
 
     /*******************************Méthode pour récupérer un enregistrement par filtre au format json*****************/
 
-    public function readByFilter($filter)
+    public function readByFilter($where=null, $orderBy=null)
     {
-        //Désinféction du filtre
+        $sql = "SELECT * FROM $this->table";
+        if ($where) {
+            $sql .= " WHERE $where";
+        }
+        if ($orderBy) {
+            $sql .= " ORDER BY $orderBy";
+        }
 
-        $sql = "SELECT * FROM $this->table WHERE $filter";
-        
         //Préparation de la requête avec utilisation des marqueurs de paramètres pour éviter les injections SQL
         $stmt = $this->dbcon->getConnection()->prepare($sql);
         $params = [];
@@ -96,17 +100,6 @@ $stmt = $this->dbcon->getConnection()->query($create);
 
     }
 
-    /**************************Méthode pour récupérer un enregistrement par son ID au format json****************
-
-    public function readSingleById($id)
-    {
-
-        $sql = "SELECT * FROM $this->table WHERE id = $id";
-        $stmt = $this->dbcon->getConnection()->query($sql);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return json_encode($result, JSON_PRETTY_PRINT);
-    }
-*/
     /**************************Méthode pour insérer un enregistrement dans la table*****************/
 
     public function create($data)
