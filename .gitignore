@@ -23,10 +23,10 @@ todo.txt
 /vendor/
 composer.phar
 
-#Ignore globals.php in config directory
-/config/
+
 
 #ignorer fichier todo.txt
 todo.txt
 
 
+config/globals.php
