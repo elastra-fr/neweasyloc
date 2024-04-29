@@ -2,9 +2,14 @@
 # Réalisation d’une bibliothèque d’accès aux données pour la société EasyLoc
 
 ## Environnement de développement et de test
-PHP 8.0.26
-Server Apache
+
+- PHP 8.0.26
+- Server Apache 2.4.54.2
+- Microsoft SQL Server 2022 (RTM) - 16.0.1000.6 (X64)   
+- MongoDb 7.0.8
+
 Installation des extensions mongodb et sqlserver dans le dossier ext de la version de php concernée.
+
 Activation des extensions dans les fichier php.ini. Ne pas oublier l'activation des extensions pour le terminal.
 
 ## Outils en ligne de commande
@@ -94,7 +99,7 @@ Il a été choisi de limiter l'abstraction pour chaque SGDB pour tenir compte de
 
 ## Sécurité 
 
-Dans les classes abstraites utilisation des marqueurs de position pour les paramètres de la requête SQL et échappe echappement des valeurs des paramètres avant de les utiliser dans la requête, ce qui permet de prévenir les injections SQL en séparant la structure de la requête des données fournies par l'utilisateur.
+Dans les classes abstraites utilisation des marqueurs de position pour les paramètres de la requête SQL et echappement des valeurs des paramètres avant de les utiliser dans la requête, ce qui permet de prévenir les injections SQL en séparant la structure de la requête des données fournies par l'utilisateur.
 
 
 ### Modularité, nouvelles tables et évolutions des sgbd
@@ -136,7 +141,7 @@ Le sharding est une technique de partitionnement de données utilisée dans les 
 
 Pour mettre en place du sharding sur une table, il est généralement judicieux de choisir une clé de sharding qui répartit les données de manière équilibrée entre les différents shards.
 
-Dans le cas de la table "Billing", la clé la plus pertinente pour le sharding va dépendre de la manière dont les données sont généralement consultées et de leur distribution. Dans le cahier des charges le client ne donne pas de précision sur la distribution des requêtes, la charge et les performances. Un échange avec le client sur ces points et des tests sont nécessaire.
+Dans le cas de la table "Billing", la clé la plus pertinente pour le sharding va dépendre de la manière dont les données sont généralement consultées et de leur distribution. Dans le cahier des charges le client ne donne pas de précision sur la distribution des requêtes, la charge et les performances. Un échange avec le client sur ces points et des tests sont nécessaires.
 
 Si aucune clé unique ne permet de répartir de manière équilibrée la charge, une clé composite pourrait être envisagée.
 
@@ -144,7 +149,7 @@ Afin de proposer une implémentation nous pouvons prendre arbitrairement comme c
 
 Pour l'implémentation, plusieurs solutions en fonctions du ou des sgbd choisis pour constituer les shards :
 -  soit revoir la structure et le niveau d'abstraction mise en place pour créer un classe abstraite commune aux sgbd constituant les shards. Comme expliqué dans l'architecture générale, cela va rendre le code plus générique et reduire l'intérêt d'utiliser des types de SGBD différents. 
-- continuer avec l'architecture actuelle en créant autant de classe abstraite/concrète que de shards ce qui va créer une certaine lourdeur et rendre difficile en cas de multiplication des shards.
+- continuer avec l'architecture actuelle en créant autant de classe abstraite/concrète que de shards ce qui va créer une certaine lourdeur et rendre difficile la maintenance en cas de multiplication des shards.
 
 
 Dans tous les cas il sera nécessaire de créer une classe sharding afin de déterminer le serveur à utiliser en fonction de la clé choisie et instancier la classe concrète d'un shard pour utiliser ses méthodes. Par exemple :
