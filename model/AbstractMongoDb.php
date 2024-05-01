@@ -74,6 +74,30 @@ abstract class AbstractMongoDb
         }
     }
 
+    /********************************Méthode pour récupérer tous les documents d'un collection avec filtre*********************************************/
+
+    public function readAllByFilter($filter)
+    {
+
+        try {
+
+            $result = $this->collection->find($filter);
+
+            //return to json format
+            return json_encode(iterator_to_array($result), JSON_PRETTY_PRINT);
+
+            //return $result;
+
+        } catch (Exception $e) {
+
+            echo "Erreur lors de la récupération des documents :" . $e->getMessage();
+
+            return false;
+        }
+    }
+
+
+
 
     //************************Méthode pour récupérer un document dans une collection par son ID avec findOne*******************
 

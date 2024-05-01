@@ -18,7 +18,7 @@ function typewriter($text)
 
     for ($i = 0; $i < mb_strlen($text); $i++) {
         echo "\033[1;32m" . mb_substr($text, $i, 1) . "\033[0m";
-        usleep(8000); // Suspendre l'exécution du script pendant 100 microsecondes
+        usleep(0); // Suspendre l'exécution du script pendant 100 microsecondes
     }
 }
 
@@ -32,8 +32,6 @@ function clearScreen()
 
 function getMeOutOfHere()
 {
-
-
     typewriter("Au revoir !\n");
     sleep(1);
     exit(0);
@@ -46,6 +44,7 @@ function getMeOutOfHere()
 
 
 clearScreen();
+
 typewriter("\nVAULT-TEC SYSTEMS  V. 2.0.7.7\n\n");
 typewriter("Bienvenue dans l'application de gestion EasyLoc\n\n");
 
@@ -71,47 +70,43 @@ if ($connection->connect()) {
 
 
 //Vérifier si la table customer existe dans la base de données SQL Server et la créer si elle n'existe pas
-
-
 $contractExists = new App\sqlsrv\ContractModel();
 typewriter("Vérification de l'existence de la table Contract dans la base de données SQL Server...\n");
 $contractExists->createContractTable();
 
 //Vérifier si la table Billing existe dans la base de données SQL Server et la créer si elle n'existe pas
-
 $billingExists = new App\sqlsrv\BillingModel();
 typewriter("Vérification de l'existence de la table Billing dans la base de données SQL Server...\n");
 $billingExists->createBillingTable();
 
 
+//Options du menu principal
 $menu = [
     '1' => "\033[1m\033[32m[Requêtes générales]\033[0m",
     '2' => "\033[1m\033[32m[Requêtes sur les contrats]\033[0m",
     '3' => "\033[1m\033[32m[Requêtes sur les clients]\033[0m",
-    '4' => "\033[1m\033[32m[Requêts sur les véhicules]\033[0m",
+    '4' => "\033[1m\033[32m[Requêtes sur les véhicules]\033[0m",
     '5' => "\033[1m\033[32m[Requêtes sur les paiements]\033[0m",
     '6' => "\033[1m\033[32m[Quitter l'application]\033[0m"
 
-
-
 ];
 
+//Boucle principale
 while (true) {
 
-    //echo "Sélectionnez une option :\n";
     typewriter("\n\n>>Menu principal - Sélectionnez une option>>:\n");
 
     foreach ($menu as $key => $value) {
         echo "{$key}. {$value}\n";
     }
-    $choice = readline();
+    $choice = readline(">");
 
 
     switch ($choice) {
 
-            //Option 1 : Reqûetes générales
+            
         case '1':
-
+            //Option 1 : Reqûetes générales
             //Afficher le sous-menu pour les requêtes générales
 
             $submenu = [
@@ -125,9 +120,6 @@ while (true) {
                 'g' => "Obtenir tous les contrats regroupés par clients",
                 'h' => "Retour au menu principal"
 
-
-
-
             ];
 
             while (true) {
@@ -136,7 +128,7 @@ while (true) {
                     echo "          {$key}. {$value}\n";
                 }
 
-                $subChoice = readline();
+                $subChoice = readline(">");
 
                 clearScreen();
 
@@ -144,27 +136,18 @@ while (true) {
 
                     case 'a':
                         //Liste des locations en retard
-
                         typewriter("Liste des locations en retard : \n");
                         $lateContract = new App\sqlsrv\ContractModel();
                         $lateContract->getLateContracts();
 
-
-
-
-
-
-                        break;
+                    break;
 
                     case 'b':
 
                         //Liste des locations non payées
-
                         typewriter("Liste des locations non payées");
                         $unpaidLocations = new App\sqlsrv\ContractPaid(null, null, null);
                         $unpaidLocations->getUnpaidContractsWithCustomerData();
-
-
 
                         break;
 
@@ -592,7 +575,7 @@ while (true) {
 
                         // Appeler la méthode createCustomer() pour insérer le client dans la base de données
                         $customerModel = new App\mongo\CustomerModel();
-                        $customerId = $customerModel->createCustomer($customer);
+                        $customerId = $customerModel->addCustomer($customer);
 
                         // Afficher un message de confirmation avec l'ID du client inséré
                         echo "Le client a été créé avec l'ID $customerId.\n";
@@ -604,21 +587,32 @@ while (true) {
                         typewriter("Recherche d'un client par nom et prénom\n");
 
                         // Demander à l'utilisateur de saisir le prénom du client
-                        $firstName = readline('Entrez le prénom du client : ');
+                        $firstName = trim(readline('Entrez le prénom du client : '));
+                        //var_dump($firstName);
+
+                        
+                        //$firstName = 'Jean';
+                        //$secondName = 'Dupont';
 
                         // Demander à l'utilisateur de saisir le nom du client
-                        $secondName = readline('Entrez le nom du client : ');
+                        $secondName =trim(readline('Entrez le nom du client : '));
+                        //var_dump($secondName);
 
                         // Créer un nouvel objet CustomerModel
                         $customer = new App\mongo\CustomerModel();
 
                         // Récupérer les données du client
-                        $customerData = $customer->readByFilter("first_name = '$firstName' AND second_name = '$secondName'");
+                       $customerData = $customer->searchCustomer($firstName,  $secondName);
                         $customerData = json_decode($customerData, true); // Convertir l'objet JSON en tableau associatif PHP
 
                         // Afficher les données du client
                         echo "Données du client :\n";
+                    
                         print_r($customerData);
+
+                        echo "\n";
+
+
 
                         break;
 
@@ -706,11 +700,12 @@ while (true) {
                                         $newPermitNumber = readline("Entrez le nouveau numéro de permis du client : ");
 
                                         // Créer un nouvel objet Customer avec les données saisies par l'utilisateur
-                                        $newCustomer = new App\mongo\Customer($selectedCustomerId, $newFirstName, $newSecondName, $newAddress, $newPermitNumber);
+                                        $newCustomer = new App\mongo\Customer(null, $newFirstName, $newSecondName, $newAddress, $newPermitNumber);
 
+                                        var_dump($newCustomer);
                                         // Appeler la méthode updateCustomer() pour modifier le client dans la base de données
                                         $customerModel = new App\mongo\CustomerModel();
-                                        $customerModel->updateCustomer($newCustomer);
+                                        $customerModel->updateCustomer($newCustomer, $selectedCustomerId);
 
                                         // Afficher un message de confirmation
                                         echo "Le client a été modifié.\n";
@@ -727,7 +722,7 @@ while (true) {
                                         if ($confirm === 'o') {
                                             // Supprimer le client de la base de données
                                             $customerModel = new App\mongo\CustomerModel();
-                                            $customerModel->deleteCustomer($selectedCustomerId);
+                                            $customerModel->deleteCustomerById($selectedCustomerId);
 
                                             // Afficher un message de confirmation
                                             echo "Le client a été supprimé.\n";

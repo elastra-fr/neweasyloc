@@ -10,6 +10,8 @@ namespace App\mongo;
 require 'vendor/autoload.php';
 require_once 'database/MongoDb_con.php';
 require_once 'model/AbstractMongoDb.php';
+use MongoDB;
+use Exception;
 
 
 //Définition de la classe Customer avec ses getters et setters
@@ -107,6 +109,7 @@ class CustomerModel extends AbstractMongoDb
 public function addCustomer($customer){
 
 
+try {
     $data = [
         'uid' => $customer->getUid(),
         'first_name' => $customer->getFirstName(),
@@ -115,10 +118,16 @@ public function addCustomer($customer){
         'permit_number' => $customer->getPermitNumber()
     ];
 
+
 //Appel de la méthode create de la classe AbstractMongoDb pour insérer un document dans la collection Customer
     $customer = parent::create($data);
-    echo "Client ajouté avec succès";
+    //echo "Client ajouté avec succès";
+    return "Client ajouté avec succès";
+}
 
+catch (Exception $e) {
+    return "Erreur lors de l'ajout du client : ". $e->getMessage();
+}
 
 }
 
@@ -171,16 +180,28 @@ public function addCustomer($customer){
 
     /******************Méthode pour modifier un Customer dans la collection Customer*****************/
 
-    public function updateCustomer($customer)
+    public function updateCustomer($customer, $id)
     {
-        $data = [
+
+        echo "id : ".$id;   
+        echo "Data : ".$customer->getUid()." ".$customer->getFirstName()." ".$customer->getSecondName()." ".$customer->getAddress()." ".$customer->getPermitNumber();
+
+        
+
+        try{
+        $data = ['$set'=>[
+            'uid' => $customer->getUid(),
             'first_name' => $customer->getFirstName(),
             'second_name' => $customer->getSecondName(),
             'address' => $customer->getAddress(),
             'permit_number' => $customer->getPermitNumber()
-        ];
+        ]]
+        
+        ;
 
-            $filter = ['uid' => $customer->getUid()];   
+
+
+            $filter = ['_id' => new MongoDB\BSON\ObjectID($id)];   
 
 //Appel de la méthode update de la classe AbstractMongoDb pour modifier un document dans la collection Customer
         $customer = parent::update($filter, $data);
@@ -188,16 +209,31 @@ public function addCustomer($customer){
         return $customer;
     }
 
+    catch (Exception $e) {
+        return "Erreur lors de la modification du client : ". $e->getMessage();
+
+    }
+
+
+
+    }
+
 
     /*************************Méthode pour rechercher un client par son nom et prénom*************************************/
 
     public function searchCustomer($first_name, $second_name)
     {
+
+      
+        //Utilisation de la méthode readSingleByFilter de la classe parent pour rechercher un client par son nom et prénom
         $filter = ['first_name' => $first_name, 'second_name' => $second_name];
-        $customer = parent::readSingleByFilter($filter);
-        echo json_encode($customer, JSON_PRETTY_PRINT);
+        $customer = parent::readAllByFilter($filter);
+        $customer= json_encode($customer, JSON_PRETTY_PRINT);
+  
         return $customer;
     }
+
+
 
 
     
