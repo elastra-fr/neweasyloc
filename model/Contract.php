@@ -172,7 +172,7 @@ class ContractModel extends AbstractSqlSrv
     public function readAll()
     {
         $contrats = parent::readAll();
-        echo $contrats;
+        //echo $contrats;
         return $contrats;
     }
 
@@ -188,29 +188,50 @@ class ContractModel extends AbstractSqlSrv
 
         //Utilisation de la méthode readByFilter de la classe parent pour récupérer les données du contrat filtrées par id
         $contrat = parent::readByFilter($filter);
-        echo $contrat;
+        //echo $contrat;
+        return $contrat;
     }
+
 
 
 
     /*********************Méthode pour insérer un contrat dans la table contract à la date actuelle ou à une date passée en paramètre*******************/
 
-    public function createContract($contract)
+
+
+     private function formatDateForDB($date)
     {
+        return date('Y-m-d H:i:s', strtotime($date));
+    }
+    public function createContract($contract)
+
+    {
+
+        $sign_datetime = $this->formatDateForDB($contract->getSignDatetime());
+        $loc_begin_datetime = $this->formatDateForDB($contract->getLocBeginDatetime());
+        $loc_end_datetime = $this->formatDateForDB($contract->getLocEndDatetime());
+        $returning_datetime = $this->formatDateForDB($contract->getReturningDatetime());
+
+
+
         $data = [
             'vehicle_uid' => $contract->getVehicleUid(),
             'customer_uid' => $contract->getCustomerUid(),
-            'sign_datetime' => $contract->getSignDatetime(),
-            'loc_begin_datetime' => $contract->getLocBeginDatetime(),
-            'loc_end_datetime' => $contract->getLocEndDatetime(),
-            'returning_datetime' => $contract->getReturningDatetime(),
+            'sign_datetime' => $sign_datetime,
+            'loc_begin_datetime' => $loc_begin_datetime,
+            'loc_end_datetime' => $loc_end_datetime,
+            'returning_datetime' => $returning_datetime,
             'price' => $contract->getPrice()
         ];
+
+var_dump($data);
+
 
         //Utilisation de la méthode create de la classe parent pour insérer les données du contrat dans la table contract
         $toInsert = parent::create($data);
         return $toInsert;
     }
+
 
 
 

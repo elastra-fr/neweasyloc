@@ -81,6 +81,15 @@ else {
 
 require_once 'model/Customer.php';
 require_once 'model/Contract.php';
+require_once 'model/Billing.php';
+require_once 'model/Vehicle.php';
+require_once 'model/ContractPaid.php';
+
+echo "<h2>Test Contrats en retard</h2>";
+
+$lateContract=new App\sqlsrv\ContractModel();
+$lateContract->getLateContracts();
+
 
 
 echo "<h2>Test liste des clients</h2>";

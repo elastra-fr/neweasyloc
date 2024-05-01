@@ -79,6 +79,8 @@ $stmt = $this->dbcon->getConnection()->query($create);
 
     public function readByFilter($where=null, $orderBy=null)
     {
+       
+       try{
         $sql = "SELECT * FROM $this->table";
         if ($where) {
             $sql .= " WHERE $where";
@@ -95,8 +97,31 @@ $stmt = $this->dbcon->getConnection()->query($create);
                 $params[":$param"] = ${$param};
             }
         $stmt->execute($params);
+
+         // Vérification si la requête a réussi
+    if ($stmt->execute() === false) {
+        throw new Exception("La requête a échoué");
+    }
+
+
+
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            // Vérification si le résultat est vide
+    if ($result === false) {
+
+        echo "Aucun résultat\n";
+        return "Aucun résultat";
+    }
+
         return json_encode($result, JSON_PRETTY_PRINT);
+       }
+       
+       catch(Exception $e){
+
+        echo "Erreur: " . $e->getMessage();
+        return false;       
+    }
 
     }
 

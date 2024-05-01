@@ -1,5 +1,7 @@
 <?php
+
 namespace App\mongo;
+
 use MongoDB;
 use Exception;
 
@@ -9,17 +11,19 @@ require_once 'config/globals.php';
 
 
 
-class MongoDB_con {
+class MongoDB_con
+{
 
     private $mongoClient;
     private $db;
 
-    private $username ;
-    private $password ;
+    private $username;
+    private $password;
     private $host;
     private $port;
 
-    public function __construct($host = 'localhost', $port = 27017, $dbname = 'easyloc') {
+    public function __construct($host = 'localhost', $port = 27017, $dbname = 'easyloc')
+    {
 
         $this->username = MONGO_USER;
         $this->password = MONGO_PASSWORD;
@@ -27,7 +31,7 @@ class MongoDB_con {
         $this->port = $port;
 
         try {
-              // $uri = "mongodb://{$this->username}:{$this->password}@{$this->host}:{$this->port}";
+            // $uri = "mongodb://{$this->username}:{$this->password}@{$this->host}:{$this->port}";
             $this->mongoClient = new MongoDB\Client("mongodb://$host:$port");
             //$this->mongoClient = new MongoDB\Client($uri);
             $this->db = $this->mongoClient->$dbname;
@@ -36,25 +40,20 @@ class MongoDB_con {
         }
     }
 
-    public function getDB() {
+    public function getDB()
+    {
         return $this->db;
     }
 
-public function connect() {
-    if ($this->db instanceof MongoDB\Database) {
-       echo "Connexion réussie !";
-        return true;
+    public function connect()
+    {
+        if ($this->db instanceof MongoDB\Database) {
+            //echo "Connexion réussie !";
+            return true;
+        }
+
+
+        //echo "Echec de la connexion";
+        return false;
     }
-
-
-    echo "Echec de la connexion";
-    return false;   }
-
-
-
-
-
 }
-
-
-?>

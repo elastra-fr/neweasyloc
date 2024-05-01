@@ -52,7 +52,7 @@ class SqlSrv_con
             //echo "Connexion réussie !";
             return true;
         } catch (PDOException $e) {
-            echo "Echec de la connexion : " . $e->getMessage();
+            //echo "Echec de la connexion : " . $e->getMessage();
             return false;
         }
     }
