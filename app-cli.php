@@ -199,9 +199,10 @@ while (true) {
 
             break;
 
-            //Option 2 : Requêtes sur les contrats
+           
         case '2':
-            // Sous-menu pour afficher les clients
+         //Option 2 : Requêtes sur les contrats
+            // Sous-menu 
             $submenu = [
                 'a' => 'Créer un contrat à la date actuelle',
                 'b' => 'Créer un contrat à une autre date',
@@ -210,6 +211,11 @@ while (true) {
                 'e' => 'Retour au menu principal',
                 'f' => 'Quitter l\'application'
             ];
+
+
+            echo "\n";
+              echo"\033[31mAvant de créer un contrat, veuillez vous assurer que le client et le véhicule existent dans la base de données\033[0m\n";
+             echo "\n";
 
             while (true) {
                 echo "Sous-menu - Requêtes sur les contrats :\n";
@@ -226,8 +232,6 @@ while (true) {
                     case 'a':
                         //Créer un contrat à la date actuelle
                         typewriter("Création d'un contrat à la date actuelle\n");
-
-                        //Création d'un contrat
 
                         // Demander à l'utilisateur de saisir l'UID du véhicule
                         $vehicleUid = readline('Entrez l\'UID du véhicule : ');
@@ -806,6 +810,8 @@ while (true) {
 
             ];
 
+            
+
 
             while (true) {
                 echo "Sous-menu - Requêtes sur les véhicules :\n";
@@ -824,23 +830,21 @@ while (true) {
                         typewriter("Création d'un véhicule\n");
 
                         // Demander à l'utilisateur de saisir le numéro d'immatriculation du véhicule
-                        $registrationNumber = readline('Entrez le numéro d\'immatriculation du véhicule : ');
+                        $licensePlate = readline('Entrez le numéro d\'immatriculation du véhicule : ');
 
                         // Demander à l'utilisateur de saisir la marque du véhicule
-                        $brand = readline('Entrez la marque du véhicule : ');
-
-                        // Demander à l'utilisateur de saisir le modèle du véhicule
-                        $model = readline('Entrez le modèle du véhicule : ');
+                        $informations = readline('Entrez les informations sur le véhicule : ');
 
                         // Demander à l'utilisateur de saisir le kilométrage du véhicule
                         $mileage = readline('Entrez le kilométrage du véhicule : ');
 
+
                         // Créer un nouvel objet Vehicle avec les données saisies par l'utilisateur
-                        $vehicle = new App\sqlsrv\Vehicle(null, $registrationNumber, $brand, $model, $mileage);
+                       $vehicle = new App\mongo\Vehicle(null, $licensePlate, $informations, $mileage);
 
                         // Appeler la méthode createVehicle() pour insérer le véhicule dans la base de données
-                        $vehicleModel = new App\sqlsrv\VehicleModel();
-                        $vehicleId = $vehicleModel->createVehicle($vehicle);
+                        $vehicleModel = new App\mongo\VehicleModel();
+                        $vehicleId = $vehicleModel->addVehicle($vehicle);
 
                         // Afficher un message de confirmation avec l'ID du véhicule inséré
                         echo "Le véhicule a été créé avec l'ID $vehicleId.\n";
@@ -855,7 +859,7 @@ while (true) {
                         $registrationNumber = readline('Entrez le numéro d\'immatriculation du véhicule : ');
 
                         // Créer un nouvel objet VehicleModel
-                        $vehicle = new App\sqlsrv\VehicleModel();
+                        $vehicle = new App\mongo\VehicleModel();
 
                         // Récupérer les données du véhicule
 
@@ -879,7 +883,7 @@ while (true) {
                         $mileage = readline('Entrez la valeur du kilométrage : ');
 
                         // Créer un nouvel objet VehicleModel
-                        $vehicle = new App\sqlsrv\VehicleModel();
+                        $vehicle = new App\mongo\VehicleModel();
 
                         // Récupérer les données des véhicules
                         $vehicles = $vehicle->searchVehicleByKmLessThan($mileage);
@@ -893,7 +897,8 @@ while (true) {
                         // Parcourir le tableau des véhicules
                         foreach ($vehicles as $vehicle) {
                             // Afficher l'ID et les informations du véhicule
-                            echo "ID : {$vehicle['uid']} - Immatriculation : {$vehicle['licence_plate']} - Marque : {$vehicle['brand']} - Modèle : {$vehicle['model']} - Kilométrage : {$vehicle['km']} km\n";
+                            echo "ID : {$vehicle['uid']} - Immatriculation : {$vehicle['licence_plate']} - Information : {$vehicle['informations']} - Kilométrage : {$vehicle['km']} km\n";  
+
                         }
 
                         break;
@@ -907,7 +912,7 @@ while (true) {
                         $mileage = readline('Entrez la valeur du kilométrage : ');
 
                         // Créer un nouvel objet VehicleModel
-                        $vehicle = new App\sqlsrv\VehicleModel();
+                        $vehicle = new App\mongo\VehicleModel();
 
                         // Récupérer les données des véhicules
                         $vehicles = $vehicle->searchVehicleByKmGreaterThan($mileage);
@@ -921,7 +926,7 @@ while (true) {
                         // Parcourir le tableau des véhicules
                         foreach ($vehicles as $vehicle) {
                             // Afficher l'ID et les informations du véhicule
-                            echo "ID : {$vehicle['uid']} - Immatriculation : {$vehicle['licence_plate']} - Marque : {$vehicle['brand']} - Modèle : {$vehicle['model']} - Kilométrage : {$vehicle['km']} km\n";
+                            echo "ID : {$vehicle['uid']} - Immatriculation : {$vehicle['licence_plate']} - Information : {$vehicle['informations']} - Kilométrage : {$vehicle['km']} km\n";  
                         }
 
                         break;
@@ -932,7 +937,7 @@ while (true) {
                         typewriter("Affichage de tous les véhicules\n");
 
                         // Récupérer tous les véhicules
-                        $vehicle = new App\sqlsrv\VehicleModel();
+                        $vehicle = new App\mongo\VehicleModel();
                         $vehicles = $vehicle->readAll();
 
                         // Convertir les données des véhicules en tableau associatif PHP
@@ -942,10 +947,191 @@ while (true) {
                         echo "Liste des véhicules :\n";
 
                         // Parcourir le tableau des véhicules
-                        foreach ($vehicles as $vehicle) {
+                       /* foreach ($vehicles as $vehicle) {
                             // Afficher l'ID et les informations du véhicule
-                            echo "ID : {$vehicle['uid']} - Immatriculation : {$vehicle['licence_plate']} - Marque : {$vehicle['brand']} - Modèle : {$vehicle['model']} - Kilométrage : {$vehicle['km']} km\n";
+                            echo "ID : {$vehicle['uid']} - Immatriculation : {$vehicle['licence_plate']} - Informations : {$vehicle['informations']} - Kilométrage : {$vehicle['km']} km\n";
+                        }*/
+
+                        //Parcourir le tableau des véhicules et les afficher sous forme de menu avec lettre de sélection
+
+                        $i = 1;
+                        foreach ($vehicles as $vehicle) {
+                            // Récupérer la valeur de $oid à partir de l'objet _id
+                            $oid = $vehicle['_id']['$oid'];
+
+                            echo "{$i}. {$vehicle['licence_plate']} (ID: {$oid})\n";
+                            $i++;
                         }
+
+                        // Demander à l'utilisateur de saisir le numéro du véhicule à sélectionner et récupérer $oid correspondant
+
+
+
+                        $vehicleNumber = readline("Entrez le numéro du véhicule à sélectionner : ");
+
+                        // Vérifier si la sélection est valide et récupérer l'ID du véhicule correspondant  
+
+                        $selectedVehicleId = null;
+                        $selectedVehicleLicensePlate = null;
+                        
+                        if (is_numeric($vehicleNumber) && $vehicleNumber >= 1 && $vehicleNumber < count($vehicles) + 1) {
+                            // Récupérer la valeur de $oid à partir de l'objet _id
+                            $selectedVehicleId = $vehicles[$vehicleNumber - 1]['_id']['$oid'];
+                            $selectedVehicleLicensePlate = $vehicles[$vehicleNumber - 1]['licence_plate'];
+                            $selectedVehicleInformations = $vehicles[$vehicleNumber - 1]['informations'];   
+
+                            clearScreen();
+
+                            echo "Vous avez sélectionné le véhicule : {$selectedVehicleLicensePlate}\n";
+                            echo "Ce véhicule a l'ID : {$selectedVehicleId}\n";
+                            echo "Informations : {$selectedVehicleInformations}\n";
+                            echo "\n";
+                            // Afficher les opérations possibles sur le véhicule
+
+                            $operations = [
+                                'a' => 'Modifier le véhicule',
+                                'b' => 'Supprimer le véhicule',
+                                'c' => 'Obtenir les contrats associés à ce véhicule',
+                                'd' => 'Retour au menu précédent',
+                                'e' => 'Quitter l\'application'
+                            ];
+
+                            while (true) {
+                                echo "Opérations possibles sur le véhicule :\n";
+
+                                foreach ($operations as $key => $value) {
+                                    echo "{$key}. {$value}\n";
+                                }
+
+                                echo "\n";
+
+                                $operation = readline("Sélectionnez une opération : ");
+
+                                switch ($operation) {
+                                    case 'a':
+                                        // Modifier le véhicule
+                                        typewriter("Modification du véhicule\n");
+
+                                        // Demander à l'utilisateur de saisir le nouveau numéro d'immatriculation du véhicule
+                                        $newLicensePlate = readline("Entrez le nouveau numéro d'immatriculation du véhicule : ");
+
+                                        // Demander à l'utilisateur de saisir les nouvelles informations sur le véhicule
+                                        $newInformations = readline("Entrez les nouvelles informations sur le véhicule : ");
+
+                                        // Demander à l'utilisateur de saisir le nouveau kilométrage du véhicule
+                                        $newMileage = readline("Entrez le nouveau kilométrage du véhicule : ");
+
+                                        // Créer un nouvel objet Vehicle avec les données saisies par l'utilisateur
+                                        $newVehicle = new App\mongo\Vehicle(null, $newLicensePlate, $newInformations, $newMileage);
+
+                                        // Appeler la méthode updateVehicle() pour modifier le véhicule dans la base de données
+                                        $vehicleModel = new App\mongo\VehicleModel();
+                                        $vehicleModel->updateVehicle($newVehicle, $selectedVehicleId);
+
+                                        // Afficher un message de confirmation
+
+                                        echo "Le véhicule a été modifié.\n";
+
+
+                                        break;
+
+                                    case 'b':
+
+                                        // Supprimer le véhicule
+                                        typewriter("Suppression du véhicule\n");
+
+                                        // Demander à l'utilisateur de confirmer la suppression
+                                        $confirm = readline("Voulez-vous vraiment supprimer ce véhicule ? (o/n) : ");
+
+                                        if ($confirm === 'o') {
+                                            // Supprimer le véhicule de la base de données
+                                            $vehicleModel = new App\mongo\VehicleModel();
+                                            $vehicleModel->deleteVehicle($selectedVehicleId);
+
+                                            // Afficher un message de confirmation
+                                            echo "Le véhicule a été supprimé.\n";
+                                        } else {
+                                            echo "La suppression a été annulée.\n";
+                                        }
+
+                                        break;
+
+                                    case 'c':
+
+                                        // Obtenir les contrats associés à ce véhicule
+                                        typewriter("Obtention des contrats associés à ce véhicule\n");
+
+                                        // Récupérer les contrats associés au véhicule
+                                        $contract = new App\sqlsrv\ContractModel();
+                                        $contracts = $contract->getContractsByVehicle($selectedVehicleId);
+
+                                        // Convertir les données des contrats en tableau associatif PHP
+                                        $contracts = json_decode($contracts, true);
+
+                                        // Afficher les contrats associés au véhicule
+                                      /*  echo "Contrats associés au véhicule :\n";*/
+
+                                        var_dump($contracts);
+
+                                        // Parcourir le tableau des contrats
+
+                        // Parcourir le tableau des contrats
+foreach ($contracts as $contract) {
+    // Vérifier si la propriété 'id' est définie avant d'y accéder
+    if (isset($contract['id'])) {
+        // Afficher l'ID et les informations du contrat
+        echo "ID : {$contract['id']}";
+
+        // Vérifier si les propriétés 'loc_begin_datetime' et 'loc_end_datetime' sont définies avant d'y accéder
+        if (isset($contract['loc_begin_datetime']) && isset($contract['loc_end_datetime'])) {
+            echo " - Début : {$contract['loc_begin_datetime']} - Fin : {$contract['loc_end_datetime']}\n";
+        } else {
+            echo " - Les dates de début et/ou de fin ne sont pas définies\n";
+        }
+    }
+}
+
+echo "\n";
+
+                                        break;
+
+                                    case 'd':
+
+                                        // Retour au menu précédent
+                                        clearScreen();
+
+                                        break 3;
+
+                                    case 'e':
+
+                                        // Quitter l'application
+                                        /*typewriter("Au revoir !\n");
+
+                                        sleep(1);
+
+                                        exit(0);*/
+
+                                        getMeOutOfHere();
+
+                                    default:
+                                        
+                                            echo "Saisie invalide\n";
+
+                                }
+
+                            }
+                        } else {    
+                            echo "Saisie invalide\n";
+                        }
+
+
+
+
+
+
+
+
+
 
                         break;
 
@@ -994,6 +1180,10 @@ while (true) {
                 'e' => "Quitter l'application"
 
             ];
+
+            echo "\n";
+            echo"\033[31mAvant de créer un paiement veuillez vous assurer que le contrat existe bien dans la base de données\033[0m\n";
+            echo "\n";
 
             while (true) {
                 echo "Sous-menu - Requêtes sur les paiements :\n";

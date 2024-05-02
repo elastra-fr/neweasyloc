@@ -183,8 +183,8 @@ catch (Exception $e) {
     public function updateCustomer($customer, $id)
     {
 
-        echo "id : ".$id;   
-        echo "Data : ".$customer->getUid()." ".$customer->getFirstName()." ".$customer->getSecondName()." ".$customer->getAddress()." ".$customer->getPermitNumber();
+        //echo "id : ".$id;   
+        //echo "Data : ".$customer->getUid()." ".$customer->getFirstName()." ".$customer->getSecondName()." ".$customer->getAddress()." ".$customer->getPermitNumber();
 
         
 

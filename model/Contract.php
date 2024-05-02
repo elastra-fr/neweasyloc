@@ -176,6 +176,18 @@ class ContractModel extends AbstractSqlSrv
         return $contrats;
     }
 
+    /***************Méthode pour récupérér les contrats associés à un véhicule**********************/
+
+    public function getContractsByVehicle($uid)
+    {
+        $filter = "vehicle_uid = '$uid'";
+
+        //Utilisation de la méthode readByFilter de la classe parent pour récupérer les données des contrats filtrées par uid véhicule
+        $contracts = parent::readByFilter($filter);
+        //echo $contracts;
+        return $contracts;
+    }
+
 
     /**********************Méthode pour récupérer les données d'un contrat par sa clé unique sur SQL Server au format json*/
 

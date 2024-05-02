@@ -11,6 +11,7 @@ Table Vehicle : Contient les données associées à un véhicule
 namespace App\mongo;
 require 'vendor/autoload.php';
 require_once 'database/MongoDb_con.php';
+use MongoDB;
 
 
 //Définition de la classe Vehicle avec ses getters et setters
@@ -102,14 +103,15 @@ class VehicleModel extends AbstractMongoDb
 
     /*********************Méthode pour modifier un véhicule dans la collection vehicle*******************/
 
-    public function updateVehicle($vehicle){
-        $data = [
+    public function updateVehicle($vehicle, $id){
+        $data = ['$set'=>[
+            'uid' => $vehicle->getUid(),
             'licence_plate' => $vehicle->getLicence_plate(),
             'informations' => $vehicle->getInformations(),
             'km' => $vehicle->getKm()
-        ];
+        ]];
 
-        $filter = ['uid' => $vehicle->getUid()];    
+        $filter = ['_id' => new MongoDB\BSON\ObjectId($id)];
 
         //Appel de la méthode update de la classe AbstractMongoDb pour mettre à jour un document dans la collection vehicle
         $updateVehicle= parent::update($filter, $data);
@@ -136,15 +138,19 @@ class VehicleModel extends AbstractMongoDb
 
     public function searchVehicleByKmGreaterThan($km){
         //Appel de la méthode read de la classe AbstractMongoDb pour récupérer tous les documents de la collection vehicle
-        $vehicle= parent::readSingleByFilter(['km' => $km]);
+         $filter = ['km' => ['$gt' => (int)$km]];
+          $vehicle= parent::readAllByFilter($filter);
         return $vehicle;
     }
 
     //Méthode pour rechercher un véhicule dont le kilométrage est inférieur à un certain seuil dans la collection vehicle
 
     public function searchVehicleByKmLessThan($km){
+
+        echo "$km";
         //Appel de la méthode read de la classe AbstractMongoDb pour récupérer tous les documents de la collection vehicle
-        $vehicle= parent::readSingleByFilter(['km' => ['$lt' => $km]]);
+        $filter = ['km' => ['$lt' => (int)$km]];    
+        $vehicle= parent::readAllByFilter($filter);
         return $vehicle;
     }
     
