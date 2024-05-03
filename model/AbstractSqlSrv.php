@@ -105,7 +105,7 @@ $stmt = $this->dbcon->getConnection()->query($create);
 
 
 
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             // Vérification si le résultat est vide
     if ($result === false) {

@@ -151,14 +151,14 @@ class ContractModel extends AbstractSqlSrv
     {
 
         $sql = "CREATE TABLE Contract (
-        id INT PRIMARY KEY,
-        vehicle_uid CHAR(255),
-        customer_uid CHAR(255),
-        sign_datetime DATETIME,
-        loc_begin_datetime DATETIME,
-        loc_end_datetime DATETIME,
-        returning_datetime DATETIME,
-        price MONEY
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    vehicle_uid CHAR(255),
+    customer_uid CHAR(255),
+    sign_datetime DATETIME,
+    loc_begin_datetime DATETIME,
+    loc_end_datetime DATETIME,
+    returning_datetime DATETIME,
+    price MONEY
     )";
 
         //Utilisation de la méthode tableExists de la classe parent pour vérifier si la table existe déjà dans la base de données et la créer si elle n'existe pas

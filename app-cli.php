@@ -104,7 +104,7 @@ while (true) {
 
     switch ($choice) {
 
-            
+
         case '1':
             //Option 1 : Reqûetes générales
             //Afficher le sous-menu pour les requêtes générales
@@ -140,7 +140,7 @@ while (true) {
                         $lateContract = new App\sqlsrv\ContractModel();
                         $lateContract->getLateContracts();
 
-                    break;
+                        break;
 
                     case 'b':
 
@@ -199,9 +199,9 @@ while (true) {
 
             break;
 
-           
+
         case '2':
-         //Option 2 : Requêtes sur les contrats
+            //Option 2 : Requêtes sur les contrats
             // Sous-menu 
             $submenu = [
                 'a' => 'Créer un contrat à la date actuelle',
@@ -214,8 +214,8 @@ while (true) {
 
 
             echo "\n";
-              echo"\033[31mAvant de créer un contrat, veuillez vous assurer que le client et le véhicule existent dans la base de données\033[0m\n";
-             echo "\n";
+            echo "\033[31mAvant de créer un contrat, veuillez vous assurer que le client et le véhicule existent dans la base de données\033[0m\n";
+            echo "\n";
 
             while (true) {
                 echo "Sous-menu - Requêtes sur les contrats :\n";
@@ -450,24 +450,30 @@ while (true) {
 
                                     case 'c':
                                         // Lister les paiements effectués pour ce contrat
+                                        echo "\n";
                                         typewriter("Liste des paiements effectués pour ce contrat\n");
+
 
                                         // Récupérer les paiements effectués pour le contrat
                                         $billing = new App\sqlsrv\BillingModel();
-                                        $billings = $billing->readAllByContractId($contractId);
-
-                                        // Convertir les données des paiements en tableau associatif PHP
-                                        $billings = json_decode($billings, true);
+                                        $billings_json = $billing->getBillingByContractId($contractId);
+                                        // Décoder la chaîne JSON en tableau PHP
+                                        $billings_array = json_decode($billings_json, true);
 
                                         // Afficher les paiements effectués pour le contrat
-
                                         echo "Paiements effectués pour le contrat :\n";
-
-                                        // Parcourir le tableau des paiements
-                                        foreach ($billings as $billing) {
-                                            // Afficher l'ID et le montant du paiement
-                                            echo "ID : {$billing['id']} - Montant : {$billing['amount']} - Date : {$billing['billing_datetime']}\n";
+                                        foreach ($billings_array as $billing) {
+                                            echo "ID : {$billing['ID']} - Montant : {$billing['Amount']}\n";
                                         }
+
+
+
+
+
+
+                                        echo "\n\n";
+
+
 
                                         break;
 
@@ -594,24 +600,24 @@ while (true) {
                         $firstName = trim(readline('Entrez le prénom du client : '));
                         //var_dump($firstName);
 
-                        
+
                         //$firstName = 'Jean';
                         //$secondName = 'Dupont';
 
                         // Demander à l'utilisateur de saisir le nom du client
-                        $secondName =trim(readline('Entrez le nom du client : '));
+                        $secondName = trim(readline('Entrez le nom du client : '));
                         //var_dump($secondName);
 
                         // Créer un nouvel objet CustomerModel
                         $customer = new App\mongo\CustomerModel();
 
                         // Récupérer les données du client
-                       $customerData = $customer->searchCustomer($firstName,  $secondName);
+                        $customerData = $customer->searchCustomer($firstName,  $secondName);
                         $customerData = json_decode($customerData, true); // Convertir l'objet JSON en tableau associatif PHP
 
                         // Afficher les données du client
                         echo "Données du client :\n";
-                    
+
                         print_r($customerData);
 
                         echo "\n";
@@ -810,7 +816,7 @@ while (true) {
 
             ];
 
-            
+
 
 
             while (true) {
@@ -840,7 +846,7 @@ while (true) {
 
 
                         // Créer un nouvel objet Vehicle avec les données saisies par l'utilisateur
-                       $vehicle = new App\mongo\Vehicle(null, $licensePlate, $informations, $mileage);
+                        $vehicle = new App\mongo\Vehicle(null, $licensePlate, $informations, $mileage);
 
                         // Appeler la méthode createVehicle() pour insérer le véhicule dans la base de données
                         $vehicleModel = new App\mongo\VehicleModel();
@@ -897,8 +903,7 @@ while (true) {
                         // Parcourir le tableau des véhicules
                         foreach ($vehicles as $vehicle) {
                             // Afficher l'ID et les informations du véhicule
-                            echo "ID : {$vehicle['uid']} - Immatriculation : {$vehicle['licence_plate']} - Information : {$vehicle['informations']} - Kilométrage : {$vehicle['km']} km\n";  
-
+                            echo "ID : {$vehicle['uid']} - Immatriculation : {$vehicle['licence_plate']} - Information : {$vehicle['informations']} - Kilométrage : {$vehicle['km']} km\n";
                         }
 
                         break;
@@ -926,7 +931,7 @@ while (true) {
                         // Parcourir le tableau des véhicules
                         foreach ($vehicles as $vehicle) {
                             // Afficher l'ID et les informations du véhicule
-                            echo "ID : {$vehicle['uid']} - Immatriculation : {$vehicle['licence_plate']} - Information : {$vehicle['informations']} - Kilométrage : {$vehicle['km']} km\n";  
+                            echo "ID : {$vehicle['uid']} - Immatriculation : {$vehicle['licence_plate']} - Information : {$vehicle['informations']} - Kilométrage : {$vehicle['km']} km\n";
                         }
 
                         break;
@@ -947,7 +952,7 @@ while (true) {
                         echo "Liste des véhicules :\n";
 
                         // Parcourir le tableau des véhicules
-                       /* foreach ($vehicles as $vehicle) {
+                        /* foreach ($vehicles as $vehicle) {
                             // Afficher l'ID et les informations du véhicule
                             echo "ID : {$vehicle['uid']} - Immatriculation : {$vehicle['licence_plate']} - Informations : {$vehicle['informations']} - Kilométrage : {$vehicle['km']} km\n";
                         }*/
@@ -973,12 +978,12 @@ while (true) {
 
                         $selectedVehicleId = null;
                         $selectedVehicleLicensePlate = null;
-                        
+
                         if (is_numeric($vehicleNumber) && $vehicleNumber >= 1 && $vehicleNumber < count($vehicles) + 1) {
                             // Récupérer la valeur de $oid à partir de l'objet _id
                             $selectedVehicleId = $vehicles[$vehicleNumber - 1]['_id']['$oid'];
                             $selectedVehicleLicensePlate = $vehicles[$vehicleNumber - 1]['licence_plate'];
-                            $selectedVehicleInformations = $vehicles[$vehicleNumber - 1]['informations'];   
+                            $selectedVehicleInformations = $vehicles[$vehicleNumber - 1]['informations'];
 
                             clearScreen();
 
@@ -1069,29 +1074,29 @@ while (true) {
                                         $contracts = json_decode($contracts, true);
 
                                         // Afficher les contrats associés au véhicule
-                                      /*  echo "Contrats associés au véhicule :\n";*/
+                                        /*  echo "Contrats associés au véhicule :\n";*/
 
                                         var_dump($contracts);
 
                                         // Parcourir le tableau des contrats
 
-                        // Parcourir le tableau des contrats
-foreach ($contracts as $contract) {
-    // Vérifier si la propriété 'id' est définie avant d'y accéder
-    if (isset($contract['id'])) {
-        // Afficher l'ID et les informations du contrat
-        echo "ID : {$contract['id']}";
+                                        // Parcourir le tableau des contrats
+                                        foreach ($contracts as $contract) {
+                                            // Vérifier si la propriété 'id' est définie avant d'y accéder
+                                            if (isset($contract['id'])) {
+                                                // Afficher l'ID et les informations du contrat
+                                                echo "ID : {$contract['id']}";
 
-        // Vérifier si les propriétés 'loc_begin_datetime' et 'loc_end_datetime' sont définies avant d'y accéder
-        if (isset($contract['loc_begin_datetime']) && isset($contract['loc_end_datetime'])) {
-            echo " - Début : {$contract['loc_begin_datetime']} - Fin : {$contract['loc_end_datetime']}\n";
-        } else {
-            echo " - Les dates de début et/ou de fin ne sont pas définies\n";
-        }
-    }
-}
+                                                // Vérifier si les propriétés 'loc_begin_datetime' et 'loc_end_datetime' sont définies avant d'y accéder
+                                                if (isset($contract['loc_begin_datetime']) && isset($contract['loc_end_datetime'])) {
+                                                    echo " - Début : {$contract['loc_begin_datetime']} - Fin : {$contract['loc_end_datetime']}\n";
+                                                } else {
+                                                    echo " - Les dates de début et/ou de fin ne sont pas définies\n";
+                                                }
+                                            }
+                                        }
 
-echo "\n";
+                                        echo "\n";
 
                                         break;
 
@@ -1114,13 +1119,11 @@ echo "\n";
                                         getMeOutOfHere();
 
                                     default:
-                                        
-                                            echo "Saisie invalide\n";
 
+                                        echo "Saisie invalide\n";
                                 }
-
                             }
-                        } else {    
+                        } else {
                             echo "Saisie invalide\n";
                         }
 
@@ -1182,7 +1185,7 @@ echo "\n";
             ];
 
             echo "\n";
-            echo"\033[31mAvant de créer un paiement veuillez vous assurer que le contrat existe bien dans la base de données\033[0m\n";
+            echo "\033[31mAvant de créer un paiement veuillez vous assurer que le contrat existe bien dans la base de données\033[0m\n";
             echo "\n";
 
             while (true) {
@@ -1199,23 +1202,71 @@ echo "\n";
 
                     case 'a':
                         //Créer un paiement
+
+                        //Récupérer la liste des contrats et afficher les contrats sous forme de menu avec lettre de sélection
+
+                        // Récupérer tous les contrats
+
+                        $contract = new App\sqlsrv\ContractModel();
+                        $contracts = $contract->readAll();
+
+                        // Convertir les données des contrats en tableau associatif PHP
+
+                        $contracts = json_decode($contracts, true);
+
+                        // Afficher les contrats
+
+                        echo "Liste des contrats :\n";
+
+                        // Parcourir le tableau des contrats et les afficher sous forme de menu avec lettre de sélection
+
+                        $i = 1;
+
+                        foreach ($contracts as $contract) {
+                            // Afficher l'ID et les informations du contrat
+                            echo "{$i}. ID : {$contract['id']} - Début : {$contract['loc_begin_datetime']} - Fin : {$contract['loc_end_datetime']}\n";
+                            $i++;
+                        }
+
+                        // Demander à l'utilisateur de saisir le numéro du contrat à sélectionner et récupérer l'ID correspondant
+
+                        $contractNumber = readline("Entrez le numéro du contrat à sélectionner : ");
+
+                        // Vérifier si la sélection est valide et récupérer l'ID du contrat correspondant
+
+                        $selectedContractId = null;
+                        $selectedContractBeginDate = null;
+                        $selectedContractEndDate = null;
+
+                        if (is_numeric($contractNumber) && $contractNumber >= 1 && $contractNumber < count($contracts) + 1) {
+                            // Récupérer $oid du contrat correspondant
+                            $selectedContractId = $contracts[$contractNumber - 1]['id'];
+                            $selectedContractBeginDate = $contracts[$contractNumber - 1]['loc_begin_datetime'];
+                            $selectedContractEndDate = $contracts[$contractNumber - 1]['loc_end_datetime'];
+
+                            clearScreen();
+
+                            echo "Vous avez sélectionné le contrat :\n";
+                            echo "ID : {$selectedContractId}\n";
+                            echo "Début : {$selectedContractBeginDate}\n";
+                            echo "Fin : {$selectedContractEndDate}\n";
+                            echo "\n";
+                        } else {
+                            echo "Saisie invalide\n";
+                        }
+
                         typewriter("Création d'un paiement\n");
 
                         // Demander à l'utilisateur de saisir le montant du paiement
                         $amount = readline('Entrez le montant du paiement : ');
 
-                        // Demander à l'utilisateur de saisir la date et l'heure du paiement
-                        $billingDatetime = readline('Entrez la date et l\'heure du paiement (format : Y-m-d H:i:s) : ');
-
-                        // Demander à l'utilisateur de saisir l'ID du contrat associé au paiement
-                        $contractId = readline('Entrez l\'ID du contrat associé au paiement : ');
-
                         // Créer un nouvel objet Billing avec les données saisies par l'utilisateur
-                        $billing = new App\sqlsrv\Billing(null, $amount, $billingDatetime, $contractId);
+                        $billing = new App\sqlsrv\Billing(null,  $selectedContractId, $amount);
 
                         // Appeler la méthode createBilling() pour insérer le paiement dans la base de données
                         $billingModel = new App\sqlsrv\BillingModel();
-                        $billingId = $billingModel->createBilling($billing);
+                        $billingId = $billingModel->addBilling($billing);
+
 
                         // Afficher un message de confirmation avec l'ID du paiement inséré
                         echo "Le paiement a été créé avec l'ID $billingId.\n";
@@ -1233,7 +1284,7 @@ echo "\n";
                         $billing = new App\sqlsrv\BillingModel();
 
                         // Récupérer les données du paiement
-                        $billingData = $billing->readSingleById($billingId);
+                        $billingData = $billing->getBillingById($billingId);
 
                         $billingData = json_decode(
                             $billingData,
@@ -1264,11 +1315,118 @@ echo "\n";
                         // Afficher les paiements
                         echo "Liste des paiements :\n";
 
-                        // Parcourir le tableau des paiements
+                        // Parcourir le tableau des paiements et afficher sous forme de menu selectionnable par ID
+
+
                         foreach ($billings as $billing) {
                             // Afficher l'ID et les informations du paiement
-                            echo "ID : {$billing['id']} - Montant : {$billing['amount']} - Date : {$billing['billing_datetime']} - ID du contrat : {$billing['contract_id']}\n";
+                            echo "ID : {$billing['ID']} - Montant : {$billing['Amount']} - ID du contrat : {$billing['Contract_id']}\n";
                         }
+
+                        $selectedBillingId = readline("Entrez l'ID du paiement à sélectionner : ");
+
+                        // Récupérer l'ID du Contrat du paiement sélectionné
+
+                        $selectedBillingContractId = null;
+
+                        foreach ($billings as $billing) {
+                            if ($billing['ID'] == $selectedBillingId) {
+                                $selectedBillingContractId = $billing['Contract_id'];
+                            }
+                        }
+
+
+
+
+                        //Sous-menu pour les opérations sur le paiement sélectionné
+
+                        $operations = [
+
+                            'a' => "Modifier le paiement",
+                            'b' => "Supprimer le paiement",
+                            'c' => "Retour au menu précédent",
+                            'd' => "Quitter l'application"
+
+                        ];
+
+                        echo "\n";
+
+                        while (true) {
+                            echo "Opérations possibles sur le paiement :\n";
+                            foreach ($operations as $key => $value) {
+                                echo "{$key}. {$value}\n";
+                            }
+
+                            $operation = readline();
+
+                            clearScreen();
+
+                            switch ($operation) {
+
+                                case 'a':
+
+                                    //Modifier le paiement
+                                    typewriter("Modification du paiement\n");
+
+                                    // Demander à l'utilisateur de saisir le nouveau montant du paiement
+                                    $newAmount = readline("Entrez le nouveau montant du paiement : ");
+
+                                    // Créer un nouvel objet Billing avec les données saisies par l'utilisateur
+                                    $newBilling = new App\sqlsrv\Billing(null, $selectedBillingContractId, $newAmount);
+
+                                    // Appeler la méthode updateBilling() pour modifier le paiement dans la base de données
+                                    $billingModel = new App\sqlsrv\BillingModel();
+                                    $billingModel->updateBilling($selectedBillingId, $newBilling);
+
+                                    // Afficher un message de confirmation
+                                    echo "Le paiement a été modifié.\n";
+
+                                    break;
+
+                                case 'b':
+
+                                    //Supprimer le paiement
+                                    typewriter("Suppression du paiement\n");
+
+                                    // Demander à l'utilisateur de confirmer la suppression
+                                    $confirm = readline("Voulez-vous vraiment supprimer ce paiement ? (o/n) : ");
+
+                                    if ($confirm === 'o') {
+                                        // Supprimer le paiement de la base de données
+                                        $billingModel = new App\sqlsrv\BillingModel();
+                                        $billingModel->deleteBilling($selectedBillingId);
+
+                                        // Afficher un message de confirmation
+                                        echo "Le paiement a été supprimé.\n";
+                                    } else {
+                                        echo "La suppression a été annulée.\n";
+                                    }
+
+                                    break;
+
+                                case 'c':
+
+                                    //Retour au menu précédent
+                                    clearScreen();
+                                    break 2;
+
+                                case 'd':
+
+                                    //Quitter l'application
+                                    /*typewriter("Au revoir !\n");
+                                    sleep(1);
+                                    exit(0);*/
+
+                                    getMeOutOfHere();
+
+                                default:
+
+                                    echo "Saisie invalide\n";
+                            }
+                        }
+
+
+
 
                         break;
 

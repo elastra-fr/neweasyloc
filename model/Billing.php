@@ -10,6 +10,7 @@ Champs :
 namespace App\sqlsrv;
 require 'vendor/autoload.php';
 require_once 'database/SqlSrv_con.php';
+use Exception;
 
 
 
@@ -87,12 +88,19 @@ public function __construct() {
 
 public function createBillingTable()
 {
-
+/*
     $sql = "CREATE TABLE Billing (
         ID INT PRIMARY KEY,
         Contract_id INT,
         Amount MONEY
     )"; 
+*/
+    $sql="CREATE TABLE Billing (
+    ID INT IDENTITY(1,1) PRIMARY KEY,
+    Contract_id INT,
+    Amount MONEY)";
+
+
 
 //Appel de la méthode tableExists de la classe parent pour vérifier si la table existe déjà et la créer si elle n'existe pas
     $exists=parent::tableExists('Billing', $sql);
@@ -131,28 +139,39 @@ public function getBillingById($id)
 public function addBilling($billing)
 {
 
+try {
+
     $data = [
-        'ID' => $billing->getID(),
+        //'ID' => $billing->getID(),
         'Contract_id' => $billing->getContract_id(),
         'Amount' => $billing->getAmount()
     ];
 
     //Appel de la méthode create de la classe parent pour insérer un paiement dans la table billing
     $billing = parent::create($data);
-    echo "Paiement ajouté avec succès";
+    return "Paiement ajouté avec succès";
 
+} catch (Exception $e) {
+    echo "Erreur : " . $e->getMessage();    
+
+}
 }
 
 
 /**************************Methode pour modifier des données de paiment****************************** */
 
 
-public function updateBilling($id, $data)
+public function updateBilling($id, $billing)
 {
 
     //Appel de la méthode update de la classe parent pour modifier les données de paiement
-    $update = parent::update($id, $data);
-    echo "Paiement modifié avec succès";
+    $data = [
+        'Contract_id' => $billing->getContract_id(),
+        'Amount' => $billing->getAmount()
+    ];
+    $update = parent::update($data, $id);
+    
+    return "Paiement modifié avec succès";
 
 }
 
@@ -161,10 +180,16 @@ public function updateBilling($id, $data)
 public function deleteBilling($id)
 {
 
-    //Appel de la méthode delete de la classe parent pour supprimer un paiement par sa clé unique
-    $delete = parent::delete($id);
-    echo "Paiement supprimé avec succès";
+try {
 
+    $filter = "ID = $id";
+    //Appel de la méthode delete de la classe parent pour supprimer un paiement par sa clé unique
+    $delete = parent::delete($filter);
+   
+    return "Paiement supprimé avec succès";
+} catch (Exception $e) {
+    echo "Erreur : " . $e->getMessage();    
+}
 }
 
 /***************Méthode pour récupérer tous les paiments d'un contrat par son ID sur SQL Server au format json**************** */
@@ -176,7 +201,7 @@ public function getBillingByContractId($id)
 
     //Appel de la méthode readByFilter de la classe parent pour récupérer les données de paiement par filtres
     $billing= parent::readByFilter($filter);
-    echo $billing;
+    //echo $billing;
     return $billing;
 
 
