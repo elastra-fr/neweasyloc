@@ -97,6 +97,10 @@ Le projet utilise des namespaces pour organiser le code et éviter les collision
 
 Il a été choisi de limiter l'abstraction pour chaque SGDB pour tenir compte des spécificités de chaque système, en gardant un code compréhensible et maintenable . Un niveau d'abstraction supérieur aurait été possible en regroupant par type de SGBD (SQL et noSQL) mais cela obligerait à rendre générique le code ce qui limiterait l'interêt d'utiliser un SGBD plutôt qu'un autre.
 
+## Difficultées liées à l'architecture imposée par le client
+
+Type de champs Char 255 va créer des difficultés au dans les méthodes d'aggrégation entre SQL Server et Mongo, notamment au niveau du stockage des OID Customer et Vehicle dans la table Contract SQL Server car ce type de données va remplir les espaces à droite au maximum du champ et donc générer des erreurs lors des "jointures". La fonction trim() a été utilisée pour réduire ces erreurs. Toutefois revoir l'architecture avec avec une colonne varchar avec une longueur variable et ne remplissant pas les espaces à droite permettrait de réduire ces problème et de simplifier le code.
+
 ## Sécurité 
 
 Dans les classes abstraites utilisation des marqueurs de position pour les paramètres de la requête SQL et echappement des valeurs des paramètres avant de les utiliser dans la requête, ce qui permet de prévenir les injections SQL en séparant la structure de la requête des données fournies par l'utilisateur.
