@@ -24,11 +24,10 @@ function typewriter($text)
 
 function clearScreen()
 {
-    // Effacer l'écran
     echo "\033[2J";
-    // Retourner le curseur en haut à gauche
     echo "\033[0;0H";
 }
+
 
 function getMeOutOfHere()
 {
@@ -499,10 +498,6 @@ while (true) {
                                     case 'f':
 
                                         getMeOutOfHere();
-                                        // Quitter l'application
-                                        /*typewriter("Au revoir !\n");
-                                        sleep(1);
-                                        exit(0);*/
 
                                     default:
 
@@ -518,11 +513,6 @@ while (true) {
                         break 2;
 
                     case 'f':
-
-                        //Quitter l'application
-                        /*typewriter("Au revoir !\n");
-                        sleep(1);
-                        exit(0);*/
 
                         getMeOutOfHere();
 
@@ -598,15 +588,11 @@ while (true) {
 
                         // Demander à l'utilisateur de saisir le prénom du client
                         $firstName = trim(readline('Entrez le prénom du client : '));
-                        //var_dump($firstName);
-
-
-                        //$firstName = 'Jean';
-                        //$secondName = 'Dupont';
+        
 
                         // Demander à l'utilisateur de saisir le nom du client
                         $secondName = trim(readline('Entrez le nom du client : '));
-                        //var_dump($secondName);
+                    
 
                         // Créer un nouvel objet CustomerModel
                         $customer = new App\mongo\CustomerModel();
@@ -751,11 +737,6 @@ while (true) {
 
                                     case 'd':
 
-                                        // Quitter l'application
-                                        /*typewriter("Au revoir !\n");
-                sleep(1);
-                exit(0);
-*/
                                         getMeOutOfHere();
                                     default:
 
@@ -766,14 +747,6 @@ while (true) {
                             echo "Saisie invalide\n";
                         }
 
-
-
-                        /*
-                        foreach ($customers as $customer) {
-                            // Afficher l'ID et les informations du client
-                            echo "ID : {$customer['_id']} - Prénom : {$customer['first_name']} - Nom : {$customer['second_name']} - Adresse : {$customer['address']} - Numéro de permis : {$customer['permit_number']}\n";
-                        }
-*/
                         break;
 
                     case 'd':
@@ -784,10 +757,6 @@ while (true) {
 
                     case 'e':
 
-                        //Quitter l'application
-                        /*    typewriter("Au revoir !\n");
-                        sleep(1);
-                        exit(0);*/
                         getMeOutOfHere();
 
                     default:
@@ -951,13 +920,6 @@ while (true) {
                         // Afficher les véhicules
                         echo "Liste des véhicules :\n";
 
-                        // Parcourir le tableau des véhicules
-                        /* foreach ($vehicles as $vehicle) {
-                            // Afficher l'ID et les informations du véhicule
-                            echo "ID : {$vehicle['uid']} - Immatriculation : {$vehicle['licence_plate']} - Informations : {$vehicle['informations']} - Kilométrage : {$vehicle['km']} km\n";
-                        }*/
-
-                        //Parcourir le tableau des véhicules et les afficher sous forme de menu avec lettre de sélection
 
                         $i = 1;
                         foreach ($vehicles as $vehicle) {
@@ -1073,10 +1035,6 @@ while (true) {
                                         // Convertir les données des contrats en tableau associatif PHP
                                         $contracts = json_decode($contracts, true);
 
-                                        // Afficher les contrats associés au véhicule
-                                        /*  echo "Contrats associés au véhicule :\n";*/
-
-                                        var_dump($contracts);
 
                                         // Parcourir le tableau des contrats
 
@@ -1109,13 +1067,6 @@ while (true) {
 
                                     case 'e':
 
-                                        // Quitter l'application
-                                        /*typewriter("Au revoir !\n");
-
-                                        sleep(1);
-
-                                        exit(0);*/
-
                                         getMeOutOfHere();
 
                                     default:
@@ -1127,15 +1078,6 @@ while (true) {
                             echo "Saisie invalide\n";
                         }
 
-
-
-
-
-
-
-
-
-
                         break;
 
                     case 'f':
@@ -1146,11 +1088,6 @@ while (true) {
 
                     case 'g':
 
-                        //Quitter l'application
-                        /*typewriter("Au revoir !\n");
-                        sleep(1);
-                        exit(0);*/
-
                         getMeOutOfHere();
 
                     default:
@@ -1158,12 +1095,6 @@ while (true) {
                         echo "Saisie invalide\n";
                 }
             }
-
-
-
-
-
-
 
 
             break;
@@ -1336,8 +1267,6 @@ while (true) {
                         }
 
 
-
-
                         //Sous-menu pour les opérations sur le paiement sélectionné
 
                         $operations = [
@@ -1412,11 +1341,6 @@ while (true) {
 
                                 case 'd':
 
-                                    //Quitter l'application
-                                    /*typewriter("Au revoir !\n");
-                                    sleep(1);
-                                    exit(0);*/
-
                                     getMeOutOfHere();
 
                                 default:
@@ -1438,11 +1362,6 @@ while (true) {
 
                     case 'e':
 
-                        //Quitter l'application
-                        /*typewriter("Au revoir !\n");
-                            sleep(1);
-                            exit(0);*/
-
                         getMeOutOfHere();
 
                     default:
@@ -1455,12 +1374,7 @@ while (true) {
 
 
         case '6':
-
-
-            // Quitter l'application
-            /*   typewriter("Au revoir !\n");
-            sleep(1);
-            exit(0);*/
+        
             getMeOutOfHere();
 
 

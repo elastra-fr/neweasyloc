@@ -28,9 +28,26 @@ echo "<h1>Bibliothèque</h1>";
 
 require_once 'database/SqlSrv_con.php';
 require_once 'database/MongoDb_con.php';
+require_once 'model/ContractAggregator.php';
 
 
 
+$conSqlSrv = new App\sqlsrv\SqlSrv_con();
+$conSqlSrv->connect();
+
+$conMongo = new App\mongo\MongoDB_con();
+$conMongo->connect();
+
+$aggregator = new App\sqlsrv\ContractAggregator($conSqlSrv->getConnection(), $conMongo->getDB());
+$contracts = $aggregator->getContracts();
+
+echo "<h2>Contrats</h2>";
+
+var_dump($contracts);
+
+
+
+/*
 
 echo "<h2>Statut connexions à la base de données</h2>";
 
@@ -71,7 +88,7 @@ if (!class_exists('MongoDB\Driver\Manager')) {
 else {
     echo "La classe MongoDB\Driver\Manager a été trouvée.";
     }
-
+*/
 ?>
 
 </section>
@@ -84,7 +101,7 @@ require_once 'model/Contract.php';
 require_once 'model/Billing.php';
 require_once 'model/Vehicle.php';
 require_once 'model/ContractPaid.php';
-
+/*
 echo "<h2>Test Contrats en retard</h2>";
 
 $lateContract=new App\sqlsrv\ContractModel();
@@ -122,7 +139,7 @@ $addCustomer->addCustomer($customerToAdd);
 */
 
 
- 
+ /*
 
 
 echo "<h2>Test Effacement client par Id</h2>";
