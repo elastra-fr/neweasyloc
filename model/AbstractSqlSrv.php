@@ -96,6 +96,9 @@ $stmt = $this->dbcon->getConnection()->query($create);
             foreach ($matches[1] as $param) {
                 $params[":$param"] = ${$param};
             }
+
+    
+        
         $stmt->execute($params);
 
          // Vérification si la requête a réussi

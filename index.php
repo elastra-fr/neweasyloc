@@ -43,7 +43,7 @@ $contracts = $aggregator->getContracts();
 
 echo "<h2>Contrats</h2>";
 
-var_dump($contracts);
+echo $contracts;
 
 
 

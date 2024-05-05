@@ -21,16 +21,41 @@ class ContractAggregator
         $this->mongoDb = $mongoDb;
     }
 
-public function getContracts()
+public function getContracts($where=null, $orderBy=null)
 {
     // Récupérer les données de la table Contrat sur SQL Server
-    $sql = "SELECT TOP 5 * FROM Contract";
-    $stmt = $this->pdo->query($sql);
+    $sql = "SELECT * FROM Contract";
+
+    if ($where) {
+        $sql .= " WHERE $where";
+    }
+
+    if ($orderBy) {
+        $sql .= " ORDER BY $orderBy";
+    }
+
+
+
+
+    //$stmt = $this->pdo->query($sql);
+    $stmt = $this->pdo->prepare($sql);
+    $params = [];
+
+preg_match_all('/:(\w+)/', $sql, $matches);
+            foreach ($matches[1] as $param) {
+                $value = ${$param};
+                $stmt->bindParam(":$param", $value);
+    
+            }
+
+    $stmt->execute($params);
+
     $contracts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($contracts as &$contract) {
         // Supprimer les espaces indésirables de 'vehicle_uid'
         $contract['vehicle_uid'] = trim($contract['vehicle_uid']);
+        $contract['customer_uid'] = trim($contract['customer_uid']);
     }
 
     // Filtrer les valeurs invalides de customer_uid
@@ -126,7 +151,45 @@ public function getContracts()
         }
     }
 
-    return $contracts;
+$jsonContracts = json_encode($contracts, JSON_PRETTY_PRINT);
+
+//var_dump($jsonContracts);
+
+
+if ($jsonContracts === false) {
+    // Il y a eu une erreur lors de la conversion en JSON
+    $errorCode = json_last_error();
+    switch ($errorCode) {
+        case JSON_ERROR_NONE:
+            echo "Aucune erreur n'a été rencontrée";
+            break;
+        case JSON_ERROR_DEPTH:
+            echo 'Dépassement de la profondeur maximale de la pile';
+            break;
+        case JSON_ERROR_STATE_MISMATCH:
+            echo 'Désynchronisation ou mode non valide';
+            break;
+        case JSON_ERROR_CTRL_CHAR:
+            echo 'Caractère de contrôle inattendu trouvé';
+            break;
+        case JSON_ERROR_SYNTAX:
+            echo 'Erreur de syntaxe, JSON mal formé';
+            break;
+        case JSON_ERROR_UTF8:
+            echo 'Caractères UTF-8 mal formés, probablement encodés en ISO-8859-1';
+            break;
+        default:
+            echo 'Erreur inconnue';
+            break;
+    }
+} else {
+    // La conversion en JSON a réussi
+   //var_dump($jsonContracts);
+}
+
+
+
+    return $jsonContracts;
 }
 
 

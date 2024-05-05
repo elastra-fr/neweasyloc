@@ -88,7 +88,10 @@ Ces classes gèrent la connexion aux bases de données SQL Server et MongoDB. El
 
 4- Modèles de données : Ces classes définissent les structures de données pour chaque entité dans l'application, comme Contract, Billing, et Vehicle.
 
-5- Fichier de configuration : Le fichier globals.php dans le dossier config/ contient les éléments de connexion pour les SGBD.
+5- Classes de recoupement :
+Ces classes vont permettre de gérer le recoupement des données provenant de SGBD différents. Notamment la classe ContractAggregator permet de recouper les données entre la table Contract dans SQL Server et les collections Customer et Vehicle dans MongoDb afin de rendre les résultats de certaines requêtes plus lisibles.
+
+6- Fichier de configuration : Le fichier globals.php dans le dossier config/ contient les éléments de connexion pour les SGBD.
 
 Ce fichier n'est pas repris dans le repository sur GitHub.
 

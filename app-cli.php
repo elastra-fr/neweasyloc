@@ -10,6 +10,7 @@ require_once 'model/Contract.php';
 require_once 'model/Billing.php';
 require_once 'model/Vehicle.php';
 require_once 'model/ContractPaid.php';
+require_once 'model/ContractAggregator.php';
 
 /*********************Méthode globales**********************/
 function typewriter($text)
@@ -137,16 +138,50 @@ while (true) {
                         //Liste des locations en retard
                         typewriter("Liste des locations en retard : \n");
                         $lateContract = new App\sqlsrv\ContractModel();
-                        $lateContract->getLateContracts();
+                        $lateContracts->$lateContract->getLateContracts();
 
                         break;
 
                     case 'b':
 
+clearScreen();
                         //Liste des locations non payées
                         typewriter("Liste des locations non payées");
-                        $unpaidLocations = new App\sqlsrv\ContractPaid(null, null, null);
-                        $unpaidLocations->getUnpaidContractsWithCustomerData();
+
+echo "\n";
+
+              //          $unpaidLocations = new App\sqlsrv\ContractPaid();
+                //        $unpaidContracts= $unpaidLocations->getUnpaidContracts();
+
+
+
+                    $fullUnpaidLocations=new App\sqlsrv\ContractPaid();
+                    $fullUnpaidContracts=$fullUnpaidLocations->getUnpaidContractsWithCustomerData();
+                        //Afficher la sortie.
+echo "\n";
+                        //var_dump($unpaidContracts);
+
+                        //Transformer en tableau
+
+                        $fullUnpaidContracts=json_decode($fullUnpaidContracts);
+
+foreach ($fullUnpaidContracts as $contract) {
+    // Afficher l'ID et les informations du contrat
+    echo "ID : {$contract->ContractId} - Client : {$contract->CustomerName} {$contract->CustomerLast} - Prix total : {$contract->TotalDue} - Payé : {$contract->TotalPaid}\n";
+}
+
+                        //var_dump($fullUnpaidContracts);
+
+                        
+
+echo "\n";
+
+                        
+
+                
+                       
+
+                       flush();   
 
                         break;
 
@@ -173,11 +208,63 @@ while (true) {
 
                         //Obtenir tous les contrats regroupés par véhicules
 
+                        clearScreen();
+
+                        $order = "vehicle_uid ASC";
+                        $contractsByVehicle = new App\sqlsrv\ContractAggregator($connection->getConnection(), $connectionMdb->getDB());
+                        $contractsByVehicle = $contractsByVehicle->getContracts(null, $order);
+
+
+                        //Transformer en tableau associatif
+
+                        $contractsByVehicle = json_decode($contractsByVehicle, JSON_PRETTY_PRINT);
+
+
+
+                        echo "Liste des contrats par clients:\n";
+
+
+                        // Parcourir le tableau des contrats
+                        foreach ($contractsByVehicle as $contract) {
+                            // Afficher l'ID et les informations du contrat
+                            echo "ID : {$contract['id']} - Client : {$contract['customer_name']} - Véhicule : {$contract['vehicle_licence_plate']} - Prix total : {$contract['price']} - Début : {$contract['loc_begin_datetime']} - Fin : {$contract['loc_end_datetime']}\n";
+                        }
+
+
+                        flush();
+
+
+
+
                         break;
 
                     case 'g':
 
                         //Obtenir tous les contrats regroupés par clients
+
+                        clearScreen();
+
+                        $order = "customer_uid ASC";
+
+                        $contractsByCustomer = new App\sqlsrv\ContractAggregator($connection->getConnection(), $connectionMdb->getDB());
+                        $contractsByCustomer = $contractsByCustomer->getContracts(null, $order);
+
+                        // echo $contractsByCustomer;
+
+                        //Transformer en tableau associatif
+
+                        $contractsByCustomer = json_decode($contractsByCustomer, JSON_PRETTY_PRINT);
+
+                        echo "Liste des contrats par clients:\n";
+
+                        // Parcourir le tableau des contrats
+
+                        foreach ($contractsByCustomer as $contract) {
+                            // Afficher l'ID et les informations du contrat
+                            echo "ID : {$contract['id']} - Client : {$contract['customer_name']} - Véhicule : {$contract['vehicle_licence_plate']} - Prix total : {$contract['price']} - Début : {$contract['loc_begin_datetime']} - Fin : {$contract['loc_end_datetime']}\n";
+                        }
+
+                        flush();
 
                         break;
 
@@ -288,44 +375,34 @@ while (true) {
                         $contractId = readline('Entrez l\'ID du contrat à rechercher : ');
 
                         // Créer un nouvel objet ContractModel
-                        $contract = new App\sqlsrv\ContractModel();
+                        //    $contract = new App\sqlsrv\ContractModel();
 
+                        $filtre = "id = '$contractId'";
+                        $contract = new App\sqlsrv\ContractAggregator($connection->getConnection(), $connectionMdb->getDB());
+                        $contractData = $contract->getContracts($filtre, null);
                         // Récupérer les données du contrat
-                        $contractData = $contract->readSingleById($contractId);
+                        //  $contractData = $contract->readSingleById($contractId);
 
                         $contractData = json_decode($contractData, true); // Convertir l'objet JSON en tableau associatif PHP
 
+                        echo "\n";
                         // Afficher les données du contrat
                         echo "Données du contrat :\n";
 
+                        $contractCustomer = $contractData[0]['customer_name'];
+                        $contractVehicle = $contractData[0]['vehicle_licence_plate'];
+                        $contractPrice = $contractData[0]['price'];
+                        $contractLocBegin = $contractData[0]['loc_begin_datetime'];
+                        $contractLocEnd = $contractData[0]['loc_end_datetime'];
+                        echo "Client : $contractCustomer\n";
+                        echo "Véhicule : $contractVehicle\n";
+                        echo "Prix : $contractPrice\n";
+                        echo "Début : $contractLocBegin\n";
+                        echo "Fin : $contractLocEnd\n";
 
-                        var_dump($contractData);
-                        print_r($contractData);
+                        echo "\n";
 
-
-
-                        $vehicleId = $contractData['vehicle_uid']; // Récupérer l'ID du véhicule
-                        $customerId = $contractData['customer_uid']; // Récupérer l'ID du client
-                        //Recherche des données du client 
-                        $customer = new App\mongo\CustomerModel();
-                        echo "Customer ID : $customerId\n";
-                        $id = '661ff60215ef346468117b7b';
-
-                        //test si $customerId est égal à $id
-                        if ($customerId === $id) {
-                            echo "Les deux valeurs sont égales\n";
-                        } else {
-                            echo "Les deux valeurs ne sont pas égales\n";
-                        }
-                        $customerData = $customer->getCustomerById($id);
-                        $customerData = json_decode($customerData, true); // Convertir l'objet JSON en tableau associatif PHP
-                        print_r($customerData);
-                        $customerName = $customerData['first_name']; // Récupérer le prénom du client
-                        $customerLastName = $customerData['second_name']; // Récupérer le nom du client
-
-
-                        echo "Le client concerné est : $customerName $customerLastName\n";
-                        echo "Le véhicule concerné est : $vehicleId\n";
+                        //var_dump($contractData);
 
 
 
@@ -336,8 +413,11 @@ while (true) {
                         typewriter("Afficher tous les contrats et effectuer des opérations sur un contrat spécifique\n");
 
                         // Récupérer tous les contrats
-                        $contract = new App\sqlsrv\ContractModel();
-                        $contracts = $contract->readAll();
+                        //$contract = new App\sqlsrv\ContractModel();
+                        //$contracts = $contract->readAll();
+
+                        $contract = new App\sqlsrv\ContractAggregator($connection->getConnection(), $connectionMdb->getDB());
+                        $contracts = $contract->getContracts();
 
                         // Convertir les données des contrats en tableau associatif PHP
                         $contracts = json_decode($contracts, true);
@@ -350,7 +430,7 @@ while (true) {
                         // Parcourir le tableau des contrats
                         foreach ($contracts as $contract) {
                             // Afficher l'ID et les informations du contrat
-                            echo "ID : {$contract['id']} - Début : {$contract['loc_begin_datetime']} - Fin : {$contract['loc_end_datetime']}\n";
+                            echo "ID : {$contract['id']} - Client : {$contract['customer_name']} - Véhicule : {$contract['vehicle_licence_plate']} - Prix total : {$contract['price']} - Début : {$contract['loc_begin_datetime']} - Fin : {$contract['loc_end_datetime']}\n";
                         }
 
                         echo "\n";
@@ -374,15 +454,20 @@ while (true) {
 
                             // Récupérer les informations du contrat sélectionné
                             $contractId = $selectedContract['id'];
-                            //$customerName = $selectedContract['customer_name'];
+                            $customerName = $selectedContract['customer_name'];
+                            $vehicleLicensePlate = $selectedContract['vehicle_licence_plate'];
+                            $price = $selectedContract['price'];
                             $locBeginDatetime = $selectedContract['loc_begin_datetime'];
                             $locEndDatetime = $selectedContract['loc_end_datetime'];
+
 
                             clearScreen();
                             // Afficher les informations du contrat sélectionné
                             echo "Contrat sélectionné :\n";
                             echo "ID : {$contractId}\n";
-                            //echo "Client : {$customerName}\n";
+                            echo "Client : {$customerName}\n";
+                            echo "Véhicule : {$vehicleLicensePlate}\n";
+                            echo "Prix Total: {$price}\n";
                             echo "Début : {$locBeginDatetime}\n";
                             echo "Fin : {$locEndDatetime}\n";
                             echo "\n";
@@ -588,11 +673,11 @@ while (true) {
 
                         // Demander à l'utilisateur de saisir le prénom du client
                         $firstName = trim(readline('Entrez le prénom du client : '));
-        
+
 
                         // Demander à l'utilisateur de saisir le nom du client
                         $secondName = trim(readline('Entrez le nom du client : '));
-                    
+
 
                         // Créer un nouvel objet CustomerModel
                         $customer = new App\mongo\CustomerModel();
@@ -663,8 +748,10 @@ while (true) {
                             $operations = [
                                 'a' => 'Modifier le client',
                                 'b' => 'Supprimer le client',
-                                'c' => 'Retour au menu précédent',
-                                'd' => 'Quitter l\'application'
+                                'c' => 'Lister tous les contrats du client',
+                                'd' => 'Lister tous les contrats en cours du client',
+                                'e' => 'Retour au menu précédent',
+                                'f' => 'Quitter l\'application'
                             ];
 
                             while (true) {
@@ -729,13 +816,69 @@ while (true) {
                                         break;
 
                                     case 'c':
+
+                                        //Lister tous les contrats du client
+
+                                        $contract = new App\sqlsrv\ContractAggregator($connection->getConnection(), $connectionMdb->getDB());
+                                        $contracts = $contract->getContracts("customer_uid = '$selectedCustomerId'", null);
+
+                                        //Transformer en tableau associatif
+
+                                        $contracts = json_decode($contracts, JSON_PRETTY_PRINT);
+
+                                        echo "\n";
+                                        echo "Liste des contrats du client $selectedCustomerName:\n";
+
+                                        // Parcourir le tableau des contrats
+
+                                        foreach ($contracts as $contract) {
+                                            // Afficher l'ID et les informations du contrat
+                                            echo "ID : {$contract['id']} - Client : {$contract['customer_name']} - Véhicule : {$contract['vehicle_licence_plate']} - Prix total : {$contract['price']} - Début : {$contract['loc_begin_datetime']} - Fin : {$contract['loc_end_datetime']}\n";
+                                        }
+
+                                        echo "\n";
+
+
+
+                                        break;
+
+                                    case 'd':
+
+                                        //Lister tous les contrats en cours du client
+
+                                        $contract = new App\sqlsrv\ContractAggregator($connection->getConnection(), $connectionMdb->getDB());
+                                        $contracts = $contract->getContracts("customer_uid = '$selectedCustomerId' AND loc_end_datetime > GETDATE()", null);
+
+                                        //Transformer en tableau associatif
+
+                                        $contracts = json_decode($contracts, JSON_PRETTY_PRINT);
+
+                                        echo "\n";
+
+                                        echo "Liste des contrats en cours du client $selectedCustomerName:\n";
+
+                                        // Parcourir le tableau des contrats
+
+                                        foreach ($contracts as $contract) {
+                                            // Afficher l'ID et les informations du contrat
+                                            echo "ID : {$contract['id']} - Client : {$contract['customer_name']} - Véhicule : {$contract['vehicle_licence_plate']} - Prix total : {$contract['price']} - Début : {$contract['loc_begin_datetime']} - Fin : {$contract['loc_end_datetime']}\n";
+                                        }
+
+                                        echo "\n";
+
+
+
+                                        break;
+
+
+                                    case 'e':
                                         // Retour au menu précédent
 
                                         clearScreen();
 
                                         break 3;
 
-                                    case 'd':
+                                    case 'f':
 
                                         getMeOutOfHere();
                                     default:
@@ -1029,17 +1172,33 @@ while (true) {
                                         typewriter("Obtention des contrats associés à ce véhicule\n");
 
                                         // Récupérer les contrats associés au véhicule
-                                        $contract = new App\sqlsrv\ContractModel();
-                                        $contracts = $contract->getContractsByVehicle($selectedVehicleId);
+                                        //$contract = new App\sqlsrv\ContractModel();
+                                        //$contracts = $contract->getContractsByVehicle($selectedVehicleId);
+                                        $contract = new App\sqlsrv\ContractAggregator($connection->getConnection(), $connectionMdb->getDB());
+
+                                        $filtre = "vehicle_uid = '$selectedVehicleId'";
+                                        $contracts = $contract->getContracts($filtre, null);
+
+
 
                                         // Convertir les données des contrats en tableau associatif PHP
                                         $contracts = json_decode($contracts, true);
 
 
+
+                                        // Afficher les contrats associés au véhicule
+
+
+                                        foreach ($contracts as $contract) {
+                                            // Afficher l'ID et les informations du contrat
+                                            echo "ID : {$contract['id']} - Client : {$contract['customer_name']} - Véhicule : {$contract['vehicle_licence_plate']} - Prix total : {$contract['price']} - Début : {$contract['loc_begin_datetime']} - Fin : {$contract['loc_end_datetime']}\n";
+                                        }
+
+
                                         // Parcourir le tableau des contrats
 
                                         // Parcourir le tableau des contrats
-                                        foreach ($contracts as $contract) {
+                                        /*  foreach ($contracts as $contract) {
                                             // Vérifier si la propriété 'id' est définie avant d'y accéder
                                             if (isset($contract['id'])) {
                                                 // Afficher l'ID et les informations du contrat
@@ -1052,7 +1211,7 @@ while (true) {
                                                     echo " - Les dates de début et/ou de fin ne sont pas définies\n";
                                                 }
                                             }
-                                        }
+                                        }*/
 
                                         echo "\n";
 
@@ -1374,7 +1533,7 @@ while (true) {
 
 
         case '6':
-        
+
             getMeOutOfHere();
 
 

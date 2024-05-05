@@ -20,19 +20,26 @@ use PDO;
 
 class ContractPaid extends AbstractSqlSrv
 {
-    private $ID;
+   /* private $ID;
     private $Contract_id;
-    private $Amount;
+    private $Amount;*/
 
-    public function __construct($ID, $Contract_id, $Amount)
+
+
+    public function __construct()
     {
 
+ $sqlSrvCon = new SqlSrv_con();
+        $pdo = $sqlSrvCon->connect();
+        parent::__construct('Contract');
+        $this->dbcon = $pdo;
         
-        $this->ID = $ID;
+      /*  $this->ID = $ID;
         $this->Contract_id = $Contract_id;
         $this->Amount = $Amount;
+        $this->dbcon = $dbcon;*/
     }
-
+/*
     public function getID()
     {
         return $this->ID;
@@ -61,7 +68,7 @@ class ContractPaid extends AbstractSqlSrv
     public function setAmount($Amount)
     {
         $this->Amount = $Amount;
-    }
+    }*/
 
 /***********************Methode pour vérifier qu'un contrat a été intégralement payé*******************************/
 
@@ -76,23 +83,49 @@ public function isContractPaid($contractId)
             WHERE c.id = :contractId
             GROUP BY c.id, c.price
         ";
+  // Préparation de la requête SQL
+         $stmt = $this->dbcon->prepare($sql);
 
-        // Préparation de la requête SQL
-        $stmt = $this->dbcon->getConnection()->prepare($sql);
         $stmt->bindParam(':contractId', $contractId, PDO::PARAM_INT);
         $stmt->execute();
 
         // Récupération des résultats de la requête
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
+/*
+        // Préparation de la requête SQL
+        $stmt = $this->dbcon->getConnection()->prepare($sql);
+
+        $stmt->bindParam(':contractId', $contractId, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        // Récupération des résultats de la requête
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);*/
+        echo "\n";
+        echo "Total Payé : ".$result['TotalPaid'];
+        echo "\n";
+        echo "Total Prix : ".$result['TotalDue'];
+        echo "\n";
+
+        echo "Reste à payer : ".($result['TotalDue']-$result['TotalPaid'])."\n";
+
+          echo "\n";
+
+
+
 
         // Vérification si le contrat a été entièrement payé
         if ($result['TotalPaid'] >= $result['TotalDue']) {
             echo "Le contrat a été intégralement payé";
+            echo "\n";
             return true;
         } else {
             echo "Le contrat n'a pas été intégralement payé";
+            echo "\n";
             return false;
         }
+
+
+
     }
 
     /************************Méthode pour lister toutes les locations impayées ***************************/
@@ -111,15 +144,22 @@ public function getUnpaidContractsWithCustomerData()
         $contractsWithCustomerData = [];
         foreach ($unpaidContracts as $contract) {
             // Récupérez les données du client depuis MongoDB en utilisant l'ID du client
-                    $id = $contract['CustomerId'];
+                    //echo "ID du client : ".$contract['CustomerId'];
+                    $id = trim($contract['CustomerId']);
                  
             $customer = new CustomerModel();
                      $customer = $customer->getCustomerById($id);
+                     $customer = json_decode($customer, true);
 
+                    
+/*
             // Ajoutez les données du client au tableau de contrats impayés
             $contract['CustomerName'] = $customer['first_name'];
             $contract['CustomerLast'] = $customer['second_name'];
-            $contractsWithCustomerData[] = $contract;
+            $contractsWithCustomerData[] = $contract;*/
+              $contract['CustomerName'] = $customer['first_name'];
+        $contract['CustomerLast'] = $customer['second_name'];
+        $contractsWithCustomerData[] = $contract;
         }
 
         // Retournez les résultats au format JSON
@@ -131,23 +171,25 @@ public function getUnpaidContracts()
     {
         // Requête SQL pour récupérer les données de paiement pour tous les contrats de location impayés
         $sql = "
-            SELECT c.id AS ContractId, c.customer_id AS CustomerId, v.license_plate AS LicensePlate, c.price AS TotalDue, ISNULL(SUM(b.Amount), 0) AS TotalPaid
+            SELECT c.id AS ContractId, c.customer_uid AS CustomerId, c.price AS TotalDue, ISNULL(SUM(b.Amount), 0) AS TotalPaid
             FROM Contract c
-            JOIN Vehicle v ON c.vehicle_id = v.id
             LEFT JOIN Billing b ON c.id = b.Contract_id
-            GROUP BY c.id, c.customer_id, v.license_plate, c.price
+            GROUP BY c.id, c.customer_uid, c.price
             HAVING ISNULL(SUM(b.Amount), 0) < c.price
         ";
 
         // Préparez la requête SQL
-        $stmt = $this->dbcon->getConnection()->prepare($sql);
+        $stmt = $this->dbcon->prepare($sql);
         $stmt->execute();
 
         // Récupérez les résultats de la requête
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        //var_dump($result);
         // Retournez les résultats au format JSON
         return json_encode($result, JSON_PRETTY_PRINT);
+
+    
     }
 
  
