@@ -135,10 +135,30 @@ while (true) {
                 switch ($subChoice) {
 
                     case 'a':
+
+
+                    clearScreen();   
                         //Liste des locations en retard
-                        typewriter("Liste des locations en retard : \n");
-                        $lateContract = new App\sqlsrv\ContractModel();
-                        $lateContracts->$lateContract->getLateContracts();
+
+                        /*
+                       
+                        */
+                        $contract=new App\sqlsrv\ContractAggregator($connection->getConnection(), $connectionMdb->getDB());
+                        //$conditions = "loc_end_datetime < GETDATE() AND (returning_datetime IS NULL OR returning_datetime < GETDATE())";
+                        $conditions = "returning_datetime > DATEADD(hour, 1, loc_end_datetime) AND returning_datetime IS NOT NULL";
+
+                        
+                        $lateContracts = $contract->getContracts($conditions, null);
+
+                        $lateContracts=json_decode($lateContracts, JSON_PRETTY_PRINT);
+
+                              foreach ($lateContracts as $contract) {
+                            // Afficher l'ID et les informations du contrat
+                            echo "ID : {$contract['id']} - Client : {$contract['customer_name']} - Véhicule : {$contract['vehicle_licence_plate']} - Prix total : {$contract['price']} - Début : {$contract['loc_begin_datetime']} - Fin : {$contract['loc_end_datetime']}\n";
+                        }
+
+
+
 
                         break;
 
@@ -149,11 +169,6 @@ clearScreen();
                         typewriter("Liste des locations non payées");
 
 echo "\n";
-
-              //          $unpaidLocations = new App\sqlsrv\ContractPaid();
-                //        $unpaidContracts= $unpaidLocations->getUnpaidContracts();
-
-
 
                     $fullUnpaidLocations=new App\sqlsrv\ContractPaid();
                     $fullUnpaidContracts=$fullUnpaidLocations->getUnpaidContractsWithCustomerData();
@@ -187,13 +202,41 @@ echo "\n";
 
                     case 'c':
 
+
+     
+                    $startDate=readline("Entrez la date de début (format : Y-m-d H:i:s) : ");
+                    $endDate=readline("Entrez la date de fin (format : Y-m-d H:i:s) : ");
                         //Nombre de retards entre deux dates données
+                    $contractBetweenDates=new App\sqlsrv\ContractModel();
+                    $NbLateContracts=$contractBetweenDates->getNbDelayBetweenDates($startDate, $endDate);
+
+                    echo "Nombre de retards entre le $startDate et le $endDate : $NbLateContracts\n";
+
+                    flush();
+
+
+
+
+
+
 
                         break;
 
                     case 'd':
 
+                   // $contracts=new App\sqlsrv\ContractModel();
+                    //$allcontracts=$contracts->readAll();    
+
+                    //echo  trim($allcontracts);
+
                         //Obtenir le nombre de retard moyen par client
+
+                    $average=new App\sqlsrv\ContractModel();
+                    $nbAverage=$average->getAvgDelayByCustomer();
+                    
+                    echo $nbAverage;
+
+
 
                         break;
 
@@ -845,9 +888,14 @@ echo "\n";
                                     case 'd':
 
                                         //Lister tous les contrats en cours du client
+                                        /*Pour la requête, on va chercher les contrats dont 
+                                        - soit la date de fin n'est pas définie ou est supérieure à la date actuelle;
+                                        - soit la date de retour n'est pas définie ou est supérieure à la date actuelle.
+                                        */
 
                                         $contract = new App\sqlsrv\ContractAggregator($connection->getConnection(), $connectionMdb->getDB());
-                                        $contracts = $contract->getContracts("customer_uid = '$selectedCustomerId' AND loc_end_datetime > GETDATE()", null);
+                                        $conditions = "customer_uid = '$selectedCustomerId' AND ((loc_end_datetime IS NULL OR loc_end_datetime > GETDATE()) OR (returning_datetime IS NULL OR returning_datetime > GETDATE()))";
+                                        $contracts = $contract->getContracts($conditions, null);
 
                                         //Transformer en tableau associatif
 

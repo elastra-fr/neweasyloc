@@ -14,6 +14,8 @@ namespace App\sqlsrv;
 
 require 'vendor/autoload.php';
 require_once 'model/AbstractSqlSrv.php';
+use PDO;
+require_once 'database/SqlSrv_con.php';
 
 //Définition de la classe Contract avec ses getters et setters
 class Contract
@@ -313,7 +315,7 @@ var_dump($data);
 
     /****************Méthode pour récupérer la Liste de toutes les locations en retard ******************/
     //Get late contract 
-    public function getLateContracts()
+   /* public function getLateContracts()
     {
 
 
@@ -324,24 +326,57 @@ var_dump($data);
         $lateContracts = parent::readByFilter($filters, null);
         return $lateContracts;
     }
-
+*/
 
     /********************************** Méthode pour compter le nombre de retard entre deux dates**********************************/
 
-    public function getNbDelayBetweenDates(){
+    
 
-$where ="";
+public function getNbDelayBetweenDates($start_date, $end_date) {
+    $conditions = "returning_datetime IS NOT NULL AND loc_end_datetime < returning_datetime AND loc_end_datetime BETWEEN '$start_date' AND '$end_date'";
+    $delays = parent::readByFilter($conditions, null);
 
-$delays=parent::readByFilter($where, null);
-return $delays;
+    $delays = json_decode($delays, JSON_PRETTY_PRINT);
+  var_dump(count($delays));
+    
+
+    
+    //return count($delays);
+}
 
 
-    }
+    
 
 
 /*****************************************Méthode pour obtenir le nombre de retard moyen par client **********************************/
 
 public function getAvgDelayByCustomer(){
+
+ $pdo= new SqlSrv_con();
+ $connection=$pdo->connect();
+
+
+
+
+   $sql = "SELECT customer_uid, AVG(DATEDIFF(hour, loc_end_datetime, returning_datetime)) as avg_delay
+            FROM Contract
+            WHERE returning_datetime IS NOT NULL AND DATEDIFF(hour, loc_end_datetime, returning_datetime) > 1
+            GROUP BY customer_uid";
+
+// Préparer la requête
+
+$stmt=$connection->prepare($sql);
+
+$stmt->execute();
+
+$result=$stmt->fetchAll(PDO::FETCH_ASSOC);
+$result=json_encode($result);
+
+return $result;
+
+
+
+    
 
 
 
