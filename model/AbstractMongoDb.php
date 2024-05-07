@@ -4,7 +4,7 @@ namespace App\mongo;
 
 use MongoDB;
 use Exception;
-
+use MongoDB\Collection;
 
 require 'vendor/autoload.php';
 require_once 'database/MongoDb_con.php';
@@ -29,7 +29,16 @@ abstract class AbstractMongoDb
     {
         $mongoDBCon = new MongoDB_con();
         $this->db = $mongoDBCon->getDB();
+
+  $this->collectionName = $collection;
+
         $this->collection = $this->db->$collection;
+         
+             // Initialisation de la propriété $collectionName
+      
+
+        
+        
     }
 
     //********************Méthode pour insérer un document dans une collection******************

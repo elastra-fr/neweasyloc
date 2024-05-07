@@ -21,7 +21,7 @@ require_once 'database/SqlSrv_con.php';
 class Contract
 {
 
-    private int $id;
+    private ?int $id;
     private string $vehicle_uid;
     private string $customer_uid;
     private string $sign_datetime;
@@ -32,7 +32,7 @@ class Contract
 
 
     //Constructeur de la classe
-    public function __construct(int $id,
+    public function __construct(?int $id,
         string $vehicle_uid,
         string $customer_uid,
         string $sign_datetime,
@@ -56,12 +56,12 @@ class Contract
 
     //Getters et setters de la classe Contract
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setId(int $id): void
+    public function setId(?int $id): void
     {
         $this->id = $id;
     }
