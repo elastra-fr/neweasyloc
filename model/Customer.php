@@ -20,14 +20,14 @@ use Exception;
 class Customer
 {
 //Attributs de la classe
-    private $uid;
-    private $first_name;
-    private $second_name;
-    private $address;
-    private $permit_number;
+    private ?string $uid;
+    private string $first_name;
+    private string $second_name;
+    private string $address;
+    private string $permit_number;
 
     //Constructeur de la classe
-    public function __construct($uid, $first_name, $second_name, $address, $permit_number)
+    public function __construct(?string $uid, string $first_name, string $second_name, string $address, string $permit_number)
     {
         $this->uid = $uid;
         $this->first_name = $first_name;
@@ -37,52 +37,52 @@ class Customer
     }
 
     //Mise en place des getters et setters
-    public function getUid()
+    public function getUid():?string
     {
         return $this->uid;
     }
 
-    public function setUid($uid)
+    public function setUid(?string $uid):void
     {
         $this->uid = $uid;
     }
 
-    public function getFirstName()
+    public function getFirstName():string
     {
         return $this->first_name;
     }
 
-    public function setFirstName($first_name)
+    public function setFirstName(string $first_name):void
     {
         $this->first_name = $first_name;
     }
 
-    public function getSecondName()
+    public function getSecondName():string
     {
         return $this->second_name;
     }
 
-    public function setSecondName($second_name)
+    public function setSecondName(string $second_name):void
     {
         $this->second_name = $second_name;
     }
 
-    public function getAddress()
+    public function getAddress():string
     {
         return $this->address;
     }
 
-    public function setAddress($address)
+    public function setAddress(string $address):void
     {
         $this->address = $address;
     }
 
-    public function getPermitNumber()
+    public function getPermitNumber():string
     {
         return $this->permit_number;
     }
 
-    public function setPermitNumber($permit_number)
+    public function setPermitNumber(string $permit_number):void
     {
         $this->permit_number = $permit_number;
     }
@@ -106,7 +106,8 @@ class CustomerModel extends AbstractMongoDb
 
 /*****************Méthode pour ajouter un client dans la collection Customer en utilisant la classe Customer*****************/
 
-public function addCustomer($customer){
+public function addCustomer(Customer $customer):string
+{
 
 
 try {
@@ -134,11 +135,9 @@ catch (Exception $e) {
 
 /******************Méthode pour récupérer les données de tous les clients sur mongoDB au format json*****************/
 
-    public function getAllCustomers()
+    public function getAllCustomers():string
     {
 
-
-        //$customers = $this->readAll();
         //Utilisation de la méthode readAll de la classe parent pour récupérer les données de tous les clients
         $customers = parent::readAll();
         echo $customers;
@@ -149,27 +148,22 @@ catch (Exception $e) {
 
     /*****************Méthode pour récupérer les données d'un client par son ID sur mongoDB au format json*****************/
 
-    public function getCustomerById($uid)
+    public function getCustomerById(string $uid):string
     {
         
-
-        //$customer = $this->readSingleById($uid);
-        //Utilisation de la méthode readSingleById de la classe parent pour récupérer les données d'un client par son ID
         $customer = parent::readSingleById($uid);
         echo $customer;
         return $customer;
-        //return $this->readOne($uid);
         
 
     }
 
     /*************************Methode pour effacer un client par son ID*************************************/
 
-    public function deleteCustomerById($uid)
+    public function deleteCustomerById(string $uid):string
     {
 
-        //Utilisation de la méthode delete de la classe parent pour effacer un client par son ID
-        //$customer = $this->delete($uid);
+    
         $customer = parent::delete($uid);
         echo "Client effacé avec succès";
         return $customer;
@@ -180,14 +174,10 @@ catch (Exception $e) {
 
     /******************Méthode pour modifier un Customer dans la collection Customer*****************/
 
-    public function updateCustomer($customer, $id)
+    public function updateCustomer(Customer $customer, string $id):string
     {
 
-        //echo "id : ".$id;   
-        //echo "Data : ".$customer->getUid()." ".$customer->getFirstName()." ".$customer->getSecondName()." ".$customer->getAddress()." ".$customer->getPermitNumber();
-
-        
-
+       
         try{
         $data = ['$set'=>[
             'uid' => $customer->getUid(),
@@ -206,7 +196,7 @@ catch (Exception $e) {
 //Appel de la méthode update de la classe AbstractMongoDb pour modifier un document dans la collection Customer
         $customer = parent::update($filter, $data);
         echo "Client modifié avec succès";
-        return $customer;
+        return "Client modifié avec succès";
     }
 
     catch (Exception $e) {
@@ -221,7 +211,7 @@ catch (Exception $e) {
 
     /*************************Méthode pour rechercher un client par son nom et prénom*************************************/
 
-    public function searchCustomer($first_name, $second_name)
+    public function searchCustomer(string $first_name, string $second_name):string
     {
 
       
@@ -252,154 +242,3 @@ catch (Exception $e) {
 
 
 
-
-/*
-require_once 'vendor/autoload.php';
-require_once 'database/MongoDb_con.php';
-*/
-/*
-  collection Customer
- Table Customer : Contient les données clients
-- uid (UUID - Identifiant unique du document)
-- first_name (CHAR(255) - Nom)
-- second_name (CHAR(255) - Prénom)
-- address (CHAR(255) - Adresse complète)
-- permit_number (CHAR(255) -numéro de permis)
- */
-/*
-
-class Customer {
-
-private $uid;
-
-private $first_name;
-
-private $second_name;
-
-private $address;
-
-private $permit_number;
-
-
-public function __construct($uid, $first_name, $second_name, $address, $permit_number) {
-
-    $this->uid = $uid;
-    $this->first_name = $first_name;
-    $this->second_name = $second_name;
-    $this->address = $address;
-    $this->permit_number = $permit_number;
-
-
-}
-
-//Mise en place des getters et setters
-
-public function getUid() {
-    return $this->uid;
-}
-
-public function setUid($uid) {
-    $this->uid = $uid;
-}
-
-public function getFirst_name() {
-    return $this->first_name;
-}
-
-public function setFirst_name($first_name) {
-    $this->first_name = $first_name;
-}
-
-public function getSecond_name() {
-    return $this->second_name;
-}   
-
-public function setSecond_name($second_name) {
-    $this->second_name = $second_name;
-}
-
-public function getAddress() {
-    return $this->address;
-}
-
-public function setAddress($address) {
-    $this->address = $address;
-}
-
-public function getPermit_number() {
-    return $this->permit_number;
-}
-
-public function setPermit_number($permit_number) {
-    $this->permit_number = $permit_number;
-}
-
-
-
-//Fonction pour récupérer les données de tous les clients sur mongoDB au format json
-
-
-public static function getAllCustomers() {
-
-    $connectionMdb = new MongoDB_con();
-    $db = $connectionMdb->getDB();
-    
-    //var_dump($db);
-    $collection = $db->Customer;
-    $cursor = $collection->find();
-    var_dump($collection);
-
-    var_dump($cursor);
-    $customers = [];
-    
-    foreach ($cursor as $document) {
-        $customer = new Customer($document['_id'], $document['first_name'], $document['second_name'], $document['address'], $document['permit_number']);
-        $customers[] = $customer;
-    }
-
-    var_dump($customers);
-
-    // Convertir le tableau d'objets en tableau associatif
-    $customerArray = [];
-    foreach ($customers as $customer) {
-        $customerArray[] = [
-            'uid' => $customer->getUid(),
-            'first_name' => $customer->getFirst_name(),
-            'second_name' => $customer->getSecond_name(),
-            'address' => $customer->getAddress(),
-            'permit_number' => $customer->getPermit_number()
-        ];
-    }
-
-
-  return json_encode($customerArray, JSON_PRETTY_PRINT);
-    
-
-    }
-
-    //Fonction pour récupérer les données d'un client par son ID sur mongoDB au format json
-
-    public static function getCustomerById($uid) {
-
-        $connectionMdb = new MongoDB_con();
-        $db = $connectionMdb->getDB();
-        $collection = $db->Customer;
-        $cursor = $collection->find(['_id' => $uid]);
-        $customer = null;
-        foreach ($cursor as $document) {
-            $customer = new Customer($document['_id'], $document['first_name'], $document['second_name'], $document['address'], $document['permit_number']);
-        }
-        if ($customer === null) {
-            return null;
-        }
-        return json_encode([
-            'uid' => $customer->getUid(),
-            'first_name' => $customer->getFirst_name(),
-            'second_name' => $customer->getSecond_name(),
-            'address' => $customer->getAddress(),
-            'permit_number' => $customer->getPermit_number()
-        ], JSON_PRETTY_PRINT);
-    }
-
-
-}*/

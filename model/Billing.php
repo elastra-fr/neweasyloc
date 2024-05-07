@@ -12,20 +12,18 @@ require 'vendor/autoload.php';
 require_once 'database/SqlSrv_con.php';
 use Exception;
 
-
-
 //Définition de la classe Billing avec ses getters et setters
 
 class Billing{
 
 
 //Attributs de la classe
-    private $ID;
-    private $Contract_id;
-    private $Amount;
+    private int $ID;
+    private int $Contract_id;
+    private float $Amount;
 
     //Constructeur de la classe
-    public function __construct($ID, $Contract_id, $Amount) {
+    public function __construct(int $ID, int $Contract_id, float $Amount) {
         $this->ID = $ID;
         $this->Contract_id = $Contract_id;
         $this->Amount = $Amount;
@@ -33,34 +31,30 @@ class Billing{
 
 
     //Getters et setters
-    public function getID() {
+    public function getID(): int{
         return $this->ID;
     }
 
-    public function setID($ID) {
+    public function setID(int $ID): void {
         $this->ID = $ID;
     }
 
-    public function getContract_id() {
+    public function getContract_id(): int {
         return $this->Contract_id;
     }
 
-    public function setContract_id($Contract_id) {
+    public function setContract_id(int $Contract_id) : void {
         $this->Contract_id = $Contract_id;
     }
 
-    public function getAmount() {
+    public function getAmount() :float{
         return $this->Amount;
     }
 
-    public function setAmount($Amount) {
+    public function setAmount(float $Amount) : void {
         $this->Amount = $Amount;
 
     }
-
-
-    
-
 
 
 }
@@ -86,15 +80,9 @@ public function __construct() {
 /******************Méthode pour créer la table si elle n'existe pas dans la base de données******************/
 //La méthode est appelée au démarrage de l'outil en ligne de commande
 
-public function createBillingTable()
+public function createBillingTable(): bool
 {
-/*
-    $sql = "CREATE TABLE Billing (
-        ID INT PRIMARY KEY,
-        Contract_id INT,
-        Amount MONEY
-    )"; 
-*/
+
     $sql="CREATE TABLE Billing (
     ID INT IDENTITY(1,1) PRIMARY KEY,
     Contract_id INT,
@@ -111,7 +99,7 @@ public function createBillingTable()
 
 //Méthode pour récupérer les données de  paiement sur SQL Server au format json en utilisant la méthode readAll de la classe parent
 
-public function getAllBilling()
+public function getAllBilling(): string
 {
 
     //Appel de la méthode readAll de la classe parent pour récupérer les données de paiement
@@ -122,13 +110,12 @@ public function getAllBilling()
 
 //Méthode pour récupérer les données de paiement par filtres sur SQL Server au format json
 
-public function getBillingById($id)
-{
+public function getBillingById(int $id):string{
 
     $filter = "ID = $id";
 
     //Appel de la méthode readByFilter de la classe parent pour récupérer les données de paiement par filtres
-    $singleBilling= parent::readByFilter($filter);
+    $singleBilling= parent::readByFilter($filter, null);
     echo $singleBilling;
     return $singleBilling;
 
@@ -136,7 +123,7 @@ public function getBillingById($id)
 
 /************************Méthode pour ajouter un paiement dans la table billing en utilisant la classe Billing**********************/
 
-public function addBilling($billing)
+public function addBilling(Billing $billing) : string
 {
 
 try {
@@ -152,7 +139,8 @@ try {
     return "Paiement ajouté avec succès";
 
 } catch (Exception $e) {
-    echo "Erreur : " . $e->getMessage();    
+    echo "Erreur : " . $e->getMessage(); 
+    return "Echec de l'ajout du paiement";   
 
 }
 }
@@ -161,7 +149,7 @@ try {
 /**************************Methode pour modifier des données de paiment****************************** */
 
 
-public function updateBilling($id, $billing)
+public function updateBilling(int $id, Billing $billing) : string
 {
 
     //Appel de la méthode update de la classe parent pour modifier les données de paiement
@@ -177,7 +165,7 @@ public function updateBilling($id, $billing)
 
 /**************************Méthode pour suppimer un paiement par sa clé unique****************************** */
 
-public function deleteBilling($id)
+public function deleteBilling(int $id): string
 {
 
 try {
@@ -188,19 +176,20 @@ try {
    
     return "Paiement supprimé avec succès";
 } catch (Exception $e) {
-    echo "Erreur : " . $e->getMessage();    
+    echo "Erreur : " . $e->getMessage();
+    return "Echec de la suppression du paiement";
 }
 }
 
 /***************Méthode pour récupérer tous les paiments d'un contrat par son ID sur SQL Server au format json**************** */
 
-public function getBillingByContractId($id)
+public function getBillingByContractId(int $id): string
 {
 
     $filter = "Contract_id = $id";
 
     //Appel de la méthode readByFilter de la classe parent pour récupérer les données de paiement par filtres
-    $billing= parent::readByFilter($filter);
+    $billing= parent::readByFilter($filter, null);
     //echo $billing;
     return $billing;
 

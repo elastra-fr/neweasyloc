@@ -17,11 +17,11 @@ abstract class AbstractSqlSrv
 {
 
 //Attributs de la classe 
-    protected $table;
-    protected $dbcon;
+    protected string $table;
+    protected SqlSrv_con $dbcon;
 
 //Constructeur de la classe
-    public function __construct($table)
+    public function __construct(string $table)
     {
 
         $sqlSrvCon = new SqlSrv_con();
@@ -35,7 +35,8 @@ abstract class AbstractSqlSrv
     /**************************Méthode pour checker si une table existe dans la base de données. Si elle n'existe pas, la méthode crée la table.****************/
     //Cette méthode est appelée au démarrage de l'outils en ligne de commande.
 
-    public function tableExists($table, $create)
+
+    public function tableExists(string $table, string $create)
     {
 
         $sql = "SELECT * FROM information_schema.tables WHERE table_name = '$table'";
@@ -64,9 +65,9 @@ $stmt = $this->dbcon->getConnection()->query($create);
 
 
     /******************Méthode pour récupérer tous les enregistrements de la table au format json*****************/
+//La méthode récupère tous les enregistrements de la table et les retourne au format JSON
 
-
-    public function readAll()
+    public function readAll(): string
     {
 
         $sql = "SELECT * FROM $this->table";
@@ -76,8 +77,9 @@ $stmt = $this->dbcon->getConnection()->query($create);
     }
 
     /*******************************Méthode pour récupérer un enregistrement par filtre au format json*****************/
+//La méthode récupère des enregistrements de la table par filtre et les retourne au format JSON
 
-    public function readByFilter($where=null, $orderBy=null)
+    public function readByFilter( ?string $where, ?string $orderBy): string
     {
        
        try{
@@ -130,7 +132,9 @@ $stmt = $this->dbcon->getConnection()->query($create);
 
     /**************************Méthode pour insérer un enregistrement dans la table*****************/
 
-    public function create($data)
+    //La méthode insère un enregistrement dans la table et retourne true si l'insertion a réussi, sinon false
+
+    public function create(array $data) : bool
     {
 
         try{
@@ -156,7 +160,9 @@ $stmt = $this->dbcon->getConnection()->query($create);
 
     /***************************Méthode pour effacer un enregistrement par son ID******************/
 
-    public function delete($filter)
+
+
+    public function delete(string $filter) : bool
     {
 try{
         $sql = "DELETE FROM $this->table WHERE $filter";
@@ -176,7 +182,7 @@ return false;
 
     /********************************Méthode pour mettre à jour un enregistrement dans la table******************/
 
-    public function update($data, $id)
+    public function update(array $data, int $id)
     {
 
 

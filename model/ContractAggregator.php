@@ -12,8 +12,8 @@ use MongoDB\BSON\ObjectId;
 
 class ContractAggregator
 {
-    private $pdo;
-    private $mongoDb;
+    private PDO $pdo;
+    private MongoDB\Database $mongoDb;
 
     public function __construct(PDO $pdo, MongoDB\Database $mongoDb)
     {
@@ -21,7 +21,7 @@ class ContractAggregator
         $this->mongoDb = $mongoDb;
     }
 
-public function getContracts($where=null, $orderBy=null)
+public function getContracts(?string $where, ?string $orderBy): string
 {
     // Récupérer les données de la table Contrat sur SQL Server
     $sql = "SELECT * FROM Contract";

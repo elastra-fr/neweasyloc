@@ -18,63 +18,33 @@ require_once 'model/Customer.php';
 use PDO;
 
 
-class ContractPaid extends AbstractSqlSrv
+class ContractPaid 
 {
-   /* private $ID;
-    private $Contract_id;
-    private $Amount;*/
-
+  
+protected SqlSrv_con $dbcon;
 
 
     public function __construct()
     {
 
  $sqlSrvCon = new SqlSrv_con();
-        $pdo = $sqlSrvCon->connect();
-        parent::__construct('Contract');
-        $this->dbcon = $pdo;
+        $this->dbcon = $sqlSrvCon;
+
+        //$pdo = $sqlSrvCon->connect();
+       // parent::__construct('Contract');
+        //$this->dbcon = $pdo;
         
-      /*  $this->ID = $ID;
-        $this->Contract_id = $Contract_id;
-        $this->Amount = $Amount;
-        $this->dbcon = $dbcon;*/
-    }
-/*
-    public function getID()
-    {
-        return $this->ID;
+     
     }
 
-    public function setID($ID)
-    {
-        $this->ID = $ID;
-    }
-
-    public function getContract_id()
-    {
-        return $this->Contract_id;
-    }
-
-    public function setContract_id($Contract_id)
-    {
-        $this->Contract_id = $Contract_id;
-    }
-
-    public function getAmount()
-    {
-        return $this->Amount;
-    }
-
-    public function setAmount($Amount)
-    {
-        $this->Amount = $Amount;
-    }*/
 
 /***********************Methode pour vérifier qu'un contrat a été intégralement payé*******************************/
 
 
-public function isContractPaid($contractId)
+public function isContractPaid(int $contractId) : bool
     {
+
+        $pdo=$this->dbcon->connect();
         // Récupération des données de paiement pour le contrat concerné. Calcul de la somme des montants payés pour le contrat et comparaison avec le montant total dû pour le contrat
         $sql = "
             SELECT c.id AS ContractId, c.price AS TotalDue, ISNULL(SUM(b.Amount), 0) AS TotalPaid
@@ -84,7 +54,7 @@ public function isContractPaid($contractId)
             GROUP BY c.id, c.price
         ";
   // Préparation de la requête SQL
-         $stmt = $this->dbcon->prepare($sql);
+         $stmt = $pdo->prepare($sql);
 
         $stmt->bindParam(':contractId', $contractId, PDO::PARAM_INT);
         $stmt->execute();
@@ -124,8 +94,6 @@ public function isContractPaid($contractId)
             return false;
         }
 
-
-
     }
 
     /************************Méthode pour lister toutes les locations impayées ***************************/
@@ -134,7 +102,7 @@ public function isContractPaid($contractId)
 
 //Recoupement avec la base customer
 
-public function getUnpaidContractsWithCustomerData()
+public function getUnpaidContractsWithCustomerData(): string
     {
         // Récupérez les données de paiement pour tous les contrats de location impayés
         $unpaidContracts = $this->getUnpaidContracts();
@@ -167,8 +135,10 @@ public function getUnpaidContractsWithCustomerData()
     }
 
 
-public function getUnpaidContracts()
+public function getUnpaidContracts(): string
     {
+
+        $pdo=$this->dbcon->connect();
         // Requête SQL pour récupérer les données de paiement pour tous les contrats de location impayés
         $sql = "
             SELECT c.id AS ContractId, c.customer_uid AS CustomerId, c.price AS TotalDue, ISNULL(SUM(b.Amount), 0) AS TotalPaid
@@ -179,7 +149,7 @@ public function getUnpaidContracts()
         ";
 
         // Préparez la requête SQL
-        $stmt = $this->dbcon->prepare($sql);
+        $stmt = $pdo->prepare($sql);
         $stmt->execute();
 
         // Récupérez les résultats de la requête

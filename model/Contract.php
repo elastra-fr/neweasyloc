@@ -21,18 +21,25 @@ require_once 'database/SqlSrv_con.php';
 class Contract
 {
 
-    private $id;
-    private $vehicle_uid;
-    private $customer_uid;
-    private $sign_datetime;
-    private $loc_begin_datetime;
-    private $loc_end_datetime;
-    private $returning_datetime;
-    private $price;
+    private int $id;
+    private string $vehicle_uid;
+    private string $customer_uid;
+    private string $sign_datetime;
+    private string $loc_begin_datetime;
+    private string $loc_end_datetime;
+    private string $returning_datetime;
+    private float $price;
 
 
     //Constructeur de la classe
-    public function __construct($id, $vehicle_uid, $customer_uid, $sign_datetime, $loc_begin_datetime, $loc_end_datetime, $returning_datetime, $price)
+    public function __construct(int $id,
+        string $vehicle_uid,
+        string $customer_uid,
+        string $sign_datetime,
+        string $loc_begin_datetime,
+        string $loc_end_datetime,
+        string $returning_datetime,
+        float $price)
     {
 
 
@@ -48,82 +55,83 @@ class Contract
 
 
     //Getters et setters de la classe Contract
-    public function getId()
+
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function setId($id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
 
-    public function getVehicleUid()
+    public function getVehicleUid(): string
     {
         return $this->vehicle_uid;
     }
 
-    public function setVehicleUid($vehicle_uid)
+    public function setVehicleUid(string $vehicle_uid): void
     {
         $this->vehicle_uid = $vehicle_uid;
     }
 
-    public function getCustomerUid()
+    public function getCustomerUid(): string
     {
         return $this->customer_uid;
     }
 
-    public function setCustomerUid($customer_uid)
+    public function setCustomerUid(string $customer_uid): void
     {
         $this->customer_uid = $customer_uid;
     }
 
-    public function getSignDatetime()
+    public function getSignDatetime(): string
     {
         return $this->sign_datetime;
     }
 
-    public function setSignDatetime($sign_datetime)
+    public function setSignDatetime(string $sign_datetime): void
     {
         $this->sign_datetime = $sign_datetime;
     }
 
-    public function getLocBeginDatetime()
+    public function getLocBeginDatetime(): string
     {
         return $this->loc_begin_datetime;
     }
 
-    public function setLocBeginDatetime($loc_begin_datetime)
+    public function setLocBeginDatetime(string $loc_begin_datetime): void
     {
         $this->loc_begin_datetime = $loc_begin_datetime;
     }
 
-    public function getLocEndDatetime()
+    public function getLocEndDatetime(): string
     {
         return $this->loc_end_datetime;
     }
 
-    public function setLocEndDatetime($loc_end_datetime)
+    public function setLocEndDatetime(string $loc_end_datetime): void
     {
         $this->loc_end_datetime = $loc_end_datetime;
     }
 
-    public function getReturningDatetime()
+    public function getReturningDatetime(): string
     {
         return $this->returning_datetime;
     }
 
-    public function setReturningDatetime($returning_datetime)
+    public function setReturningDatetime(string $returning_datetime): void
     {
         $this->returning_datetime = $returning_datetime;
     }
 
-    public function getPrice()
+    public function getPrice(): float
     {
         return $this->price;
     }
 
-    public function setPrice($price)
+    public function setPrice(float $price): void
     {
         $this->price = $price;
     }
@@ -149,7 +157,7 @@ class ContractModel extends AbstractSqlSrv
 
     /********************************Méthode pour créer la table si elle n'existe pas dans la base de données**************/
 
-    public function createContractTable()
+    public function createContractTable(): bool
     {
 
         $sql = "CREATE TABLE Contract (
@@ -171,7 +179,7 @@ class ContractModel extends AbstractSqlSrv
 
 
     /*******************Méthode pour récupérer les données de tous les contrats sur SQL Server au format json*******************/
-    public function readAll()
+    public function readAll(): string
     {
         $contrats = parent::readAll();
         //echo $contrats;
@@ -180,12 +188,12 @@ class ContractModel extends AbstractSqlSrv
 
     /***************Méthode pour récupérér les contrats associés à un véhicule**********************/
 
-    public function getContractsByVehicle($uid)
+    public function getContractsByVehicle(string $uid): string
     {
         $filter = "vehicle_uid = '$uid'";
 
         //Utilisation de la méthode readByFilter de la classe parent pour récupérer les données des contrats filtrées par uid véhicule
-        $contracts = parent::readByFilter($filter);
+        $contracts = parent::readByFilter($filter, null);
         //echo $contracts;
         return $contracts;
     }
@@ -195,13 +203,13 @@ class ContractModel extends AbstractSqlSrv
 
 
 
-    public function readSingleById($id)
+    public function readSingleById(int $id): string
     {
         //Filtrer les données par id    
         $filter = "id =$id";
 
         //Utilisation de la méthode readByFilter de la classe parent pour récupérer les données du contrat filtrées par id
-        $contrat = parent::readByFilter($filter);
+        $contrat = parent::readByFilter($filter, null);
         //echo $contrat;
         return $contrat;
     }
@@ -217,7 +225,7 @@ class ContractModel extends AbstractSqlSrv
     {
         return date('Y-m-d H:i:s', strtotime($date));
     }
-    public function createContract($contract)
+    public function createContract(Contract $contract): bool
 
     {
 
@@ -252,7 +260,7 @@ var_dump($data);
 
 
     /************************Méthode pour modifier un contrat dans la table contract*****************/
-    public function updateContract($contract, $id)
+    public function updateContract(Contract $contract, int $id): bool
     {
         $data = [
             'vehicle_uid' => $contract->getVehicleUid(),
@@ -274,7 +282,7 @@ var_dump($data);
 
     /**************************Méthode pour effacer un contrat par sa clé unique*************************************/
 
-    public function deleteContract($id)
+    public function deleteContract(int $id): bool
     {
 
 
@@ -288,19 +296,19 @@ var_dump($data);
 
 
     /******************Methode pour récupérer la liste des contrats par uid utilisateur ********************/
-
-    public function getContractsByUser($uid)
+/*
+    public function getContractsByUser(string $uid): string
     {
         $filter = "customer_uid = '$uid'";
 
         //Utilisation de la méthode readByFilter de la classe parent pour récupérer les données des contrats filtrées par uid utilisateur
-        $contracts = parent::readByFilter($filter);
+        $contracts = parent::readByFilter($filter, null);
         echo $contracts;
         return $contracts;
-    }
+    }*/
 
 
-    /****************Liste des locations en cours associées à un utilisateur******************/
+    /****************Liste des locations en cours associées à un utilisateur******************//*
     public function getOngoingContractsByUser($uid)
     {
 
@@ -311,7 +319,7 @@ var_dump($data);
         echo $contracts;
         return $contracts;
     }
-
+*/
 
     /****************Méthode pour récupérer la Liste de toutes les locations en retard ******************/
     //Get late contract 
@@ -332,7 +340,8 @@ var_dump($data);
 
     
 
-public function getNbDelayBetweenDates($start_date, $end_date) {
+public function getNbDelayBetweenDates(string $start_date, string $end_date)
+ {
     $conditions = "returning_datetime IS NOT NULL AND loc_end_datetime < returning_datetime AND loc_end_datetime BETWEEN '$start_date' AND '$end_date'";
     $delays = parent::readByFilter($conditions, null);
 
@@ -373,50 +382,6 @@ $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
 $result=json_encode($result);
 
 return $result;
-
-
-
-    
-
-
-
-
-
-}
-
-
-
-
-/******************************************Méthode pour obtenir la liste des contrats pour un véhicule donné*************************/
-
-
-
-
-
-/********************************************Récupérer tous les contrats triés par client*************************************************/
-
-public function getAllContractsSortByUser(){
-
-$filter="ORDER BY 'customer_uid'";
-
-$contracts=parent::readByFilter(null, $filter);
-return $contracts;
-
-
-
-}
-
-
-
-/*********************************************Récupérer tous les contrats tris par véhicules **********************************************/
-
-public function getAllContractsSortByVehicle($vehicle)
-{
-
-$filter="ORDER BY ''vehicle_uid";
-
-$contracts=parent::readByFilter($filter);
-return $contracts;
 
 
 }

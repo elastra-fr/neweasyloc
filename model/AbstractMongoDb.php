@@ -12,7 +12,7 @@ require_once 'database/MongoDb_con.php';
 
 
 
-//Class abstraite pour des opérations classiques sur les collections MongoDB pour permettre la réutilisation du code pour d'autres collections MongoDB
+//Classe abstraite pour des opérations classiques sur les collections MongoDB pour permettre la réutilisation du code pour d'autres collections MongoDB
 //Cette classe contient des méthodes pour insérer, lire, mettre à jour et supprimer des documents dans une collection MongoDB
 //Les méthodes de cette classe sont utilisées par les classes de modèle pour effectuer des opérations CRUD sur les collections MongoDB
 //Les classes de modèle héritent de cette classe pour effectuer des opérations CRUD sur les collections MongoDB
@@ -21,11 +21,11 @@ abstract class AbstractMongoDb
 {
 
     //
-    protected $db;
-    protected $collection;
+    protected MongoDB\Database $db;
+    protected MongoDB\Collection $collection;
 
     //Constructeur de la classe
-    public function __construct($collection)
+    public function __construct( string $collection)
     {
         $mongoDBCon = new MongoDB_con();
         $this->db = $mongoDBCon->getDB();
@@ -33,8 +33,9 @@ abstract class AbstractMongoDb
     }
 
     //********************Méthode pour insérer un document dans une collection******************
+
     //La méthode récupère un tableau associatif $data  et insère un document dans une collection
-    public function create($data)
+    public function create(array $data) : string
     {
 
         try {
@@ -51,7 +52,8 @@ abstract class AbstractMongoDb
 
 
 
-    public function readAll()
+//La méthode récupère tous les documents d'une collection et les retourne au format JSON
+    public function readAll() : string
     {
 
 
@@ -76,7 +78,8 @@ abstract class AbstractMongoDb
 
     /********************************Méthode pour récupérer tous les documents d'un collection avec filtre*********************************************/
 
-    public function readAllByFilter($filter)
+//La méthode récupère tous les documents d'une collection avec un filtre et les retourne au format JSON
+    public function readAllByFilter(array $filter) : string
     {
 
         try {
@@ -101,7 +104,8 @@ abstract class AbstractMongoDb
 
     //************************Méthode pour récupérer un document dans une collection par son ID avec findOne*******************
 
-    public function readSingleById($id)
+//La méthode récupère un document dans une collection par son ID et le retourne au format JSON
+    public function readSingleById(string $id) : string
     {
 
         try {
@@ -119,7 +123,8 @@ abstract class AbstractMongoDb
 
     //************************Méthode pour récupérer un document dans une collection par un filtre avec findOne*******************
 
-    public function readSingleByFilter($filter)
+//La méthode récupère un document dans une collection par un filtre et le retourne au format JSON
+    public function readSingleByFilter(array $filter) : string
     {
 
         try {
@@ -134,8 +139,8 @@ abstract class AbstractMongoDb
     }
 
     //***************************Méthode pour supprimer un document dans une collection par son ID avec deleteOne******************
-
-    public function delete($id)
+//La méthode supprime un document dans une collection par son ID et retourne true si la suppression a réussi, sinon false
+    public function delete(string $id) : bool
     {
 
         try {
@@ -155,12 +160,15 @@ abstract class AbstractMongoDb
 
     //*********************************Méthode pour mettre à jour un document dans une collection par son ID avec updateOne******************
 
-    public function update($filter, $data)
+//La méthode met à jour un document dans une collection par son ID et retourne true si la mise à jour a réussi, sinon false
+
+    public function update(array $filter,  array $data)  : bool
     {
 
         try {
 
             $result = $this->collection->updateOne($filter, $data);
+            return true;
         } catch (Exception $e) {
 
             echo "Erreur lors de la mise à jour du document :" . $e->getMessage();
