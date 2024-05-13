@@ -12,6 +12,7 @@ namespace App\mongo;
 require 'vendor/autoload.php';
 require_once 'database/MongoDb_con.php';
 use MongoDB;
+use Exception;
 
 
 //Définition de la classe Vehicle avec ses getters et setters
@@ -129,11 +130,20 @@ class VehicleModel extends AbstractMongoDb
 
     /***********************Méthode pour supprimer un véhicule dans la collection vehicle*******************/
 
-    public function deleteVehicle(string $uid):string
+    public function deleteVehicle(string $uid):bool
     {
+
+        try{
+             $deleteVehicle= parent::delete($uid);
+            return true;
+        }
+
+        catch(Exception $e){
+            echo "Erreur lors de la suppression du document :" . $e->getMessage();
+            return false;
+        }
         //Appel de la méthode delete de la classe AbstractMongoDb pour supprimer un document dans la collection vehicle
-        $deleteVehicle= parent::delete($uid);
-        return $deleteVehicle;
+       
     }
 
 

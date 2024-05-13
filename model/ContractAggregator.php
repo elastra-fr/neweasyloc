@@ -60,6 +60,10 @@ preg_match_all('/:(\w+)/', $sql, $matches);
 
     $contracts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    if (!$contracts) {
+    return json_encode([]);
+}
+
     foreach ($contracts as &$contract) {
         // Supprimer les espaces indésirables de 'vehicle_uid'
         $contract['vehicle_uid'] = trim($contract['vehicle_uid']);

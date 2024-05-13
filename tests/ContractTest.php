@@ -22,26 +22,6 @@ class ContractTest extends TestCase
 
 {
 
-
-/*public function testReadAll()
-{
-    // Créez un mock pour la classe ContractModel
-    $contractModelMock = $this->getMockBuilder(ContractModel::class)
-                              ->onlyMethods(['readAll'])
-                              ->getMock();
-
-    // Configurez le mock pour retourner une valeur spécifique
-    $expectedResult = 'expected result';
-    $contractModelMock->method('readAll')->willReturn($expectedResult);
-
-    // Appelez la méthode à tester
-    $result = $contractModelMock->readAll();
-
-    // Vérifiez que le résultat est ce que vous attendiez
-    $this->assertEquals($expectedResult, $result);
-}*/
-
-
 //Test de la création de l'objet Contract avec des données valides
 
 public function testCreateContractWithValidData()
@@ -72,7 +52,7 @@ $this->expectException(TypeError::class);
 
 public function testReadAll()
 {
-    // Données d'exemple représentant ce que vous attendez de la méthode readAll
+    // Données d'exemple représentant ce qu'on attend de la méthode readAll
     $expectedData = '[{"id":1,"field1":"value1"},{"id":2,"field1":"value2"}]';
 
     // Créez un mock pour la classe ContractModel
@@ -96,13 +76,13 @@ public function testReadAll()
     // Appelez la méthode à tester
     $result = $contractModelMock->readAll();
 
-    // Vérifiez que le résultat est ce que vous attendiez
+    // Vérifiez que le résultat est ce qu'on attendait
     $this->assertEquals($expectedData, $result);
 }
 
 public function testReadByFilter()
 {
-    // Données d'exemple représentant ce que vous attendez de la méthode readByFilter
+    // Données d'exemple représentant ce qu'on attend de la méthode readByFilter
     $expectedData = '[{"id":1,"field1":"value1"}]';
 
     // Créez un mock pour la classe ContractModel
@@ -116,7 +96,7 @@ public function testReadByFilter()
     // Appelez la méthode à tester
     $result = $contractModelMock->readByFilter('filter', 'options');
 
-    // Vérifiez que le résultat est ce que vous attendiez
+    // Vérifiez que le résultat est ce qu'on attendait
     $this->assertEquals($expectedData, $result);    
 }
 
@@ -124,12 +104,12 @@ public function testReadByFilter()
 // Test de la méthode create à partir d'un objet Contract
 public function testCreate()
 {
-    // Données d'exemple représentant ce que vous attendez de la méthode create
+    // Données d'exemple représentant ce qu'on attend de la méthode create
     $expectedData = true;
 
     // Créez un mock pour la classe ContractModel
     $contractModelMock = $this->getMockBuilder(ContractModel::class)
-                              ->onlyMethods(['create'])
+                              ->onlyMethods(['createContract'])
                               ->getMock();
 
     $testContrat = new Contract(null, '123', '456', '2021-06-01 12:00:00', '2021-06-01 12:00:00', '2021-06-01 12:00:00', '2021-06-01 12:00:00', 100);
@@ -137,12 +117,59 @@ public function testCreate()
 
 
     // Configurez le mock pour retourner les données d'exemple
-    $contractModelMock->method('create')->willReturn($expectedData);
+    $contractModelMock->method('createContract')->willReturn($expectedData);
 
     // Appelez la méthode à tester
     $result = $contractModelMock->createContract($testContrat);
 
-    // Vérifiez que le résultat est ce que vous attendiez
+    // Vérifiez que le résultat est ce qu'on attendait
+    $this->assertEquals($expectedData, $result);    
+
+}
+
+// Test de la méthode update à partir d'un objet Contract
+
+public function testUpdate()
+{
+    // Données d'exemple représentant ce qu'on attend de la méthode update
+    $expectedData = true;
+
+    // Créez un mock pour la classe ContractModel
+    $contractModelMock = $this->getMockBuilder(ContractModel::class)
+                              ->onlyMethods(['updateContract'])
+                              ->getMock();
+
+    $testContrat = new Contract(null, '123', '456', '2021-06-01 12:00:00', '2021-06-01 12:00:00', '2021-06-01 12:00:00', '2021-06-01 12:00:00', 100);
+
+    // Configurez le mock pour retourner les données d'exemple
+    $contractModelMock->method('updateContract')->willReturn($expectedData);
+
+    // Appelez la méthode à tester
+    $result = $contractModelMock->updateContract($testContrat, 0);
+
+    // Vérifiez que le résultat est ce qu'on attendait
+    $this->assertEquals($expectedData, $result);    
+}
+
+// Test de la méthode delete à partir d'un id
+
+public function testDelete()
+{
+    // Données d'exemple représentant ce qu'on attend de la méthode delete
+    $expectedData = true;
+
+    // Créez un mock pour la classe ContractModel
+    $contractModelMock = $this->getMockBuilder(ContractModel::class)
+                              ->onlyMethods(['deleteContract'])
+                              ->getMock();
+
+    // Configurez le mock pour retourner les données d'exemple
+    $contractModelMock->method('deleteContract')->willReturn($expectedData);
+
+    // Appelez la méthode à tester
+    $result = $contractModelMock->deleteContract(0);
+
+    // Vérifiez que le résultat est ce qu'on attendait
     $this->assertEquals($expectedData, $result);    
 
 }

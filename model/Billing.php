@@ -10,6 +10,7 @@ Champs :
 namespace App\sqlsrv;
 require 'vendor/autoload.php';
 require_once 'database/SqlSrv_con.php';
+require_once 'model/AbstractSqlSrv.php';
 use Exception;
 
 //Définition de la classe Billing avec ses getters et setters

@@ -108,6 +108,13 @@ Type de champs Char 255 va créer des difficultés au dans les méthodes d'aggr�
 
 Dans les classes abstraites utilisation des marqueurs de position pour les paramètres de la requête SQL et echappement des valeurs des paramètres avant de les utiliser dans la requête, ce qui permet de prévenir les injections SQL en séparant la structure de la requête des données fournies par l'utilisateur.
 
+## Tests Unitaires
+
+Le projet utilise des tests unitaires (PHPUnit) pour vérifier le bon fonctionnement des différentes classes de connexions et de modèles du projet. Les classes de test sont définies dans le répertoire tests/.
+
+Ces tests permettent de s'assurer que les méthodes se comportent comme prévu, indépendamment des autres parties du système.
+
+Ces tests peuvent êtres lancés dans le terminal via la commande : vendor/bin/phpunit tests --colors --verbose
 
 ### Modularité, nouvelles tables et évolutions des sgbd
 
