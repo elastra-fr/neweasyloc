@@ -19,7 +19,7 @@ function typewriter($text)
 
     for ($i = 0; $i < mb_strlen($text); $i++) {
         echo "\033[1;32m" . mb_substr($text, $i, 1) . "\033[0m";
-        usleep(0); // Suspendre l'exécution du script pendant 100 microsecondes
+        usleep(1); // Suspendre l'exécution du script pendant 100 microsecondes
     }
 }
 
@@ -1464,7 +1464,7 @@ while (true) {
 
 
                         // Afficher un message de confirmation avec l'ID du paiement inséré
-                        echo "Le paiement a été créé avec l'ID $billingId.\n";
+                        echo "Le paiement a été créé avec  succès";
 
                         break;
 
