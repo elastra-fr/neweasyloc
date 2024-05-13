@@ -14,7 +14,11 @@ namespace App\sqlsrv;
 
 require 'vendor/autoload.php';
 require_once 'model/AbstractSqlSrv.php';
+
 use PDO;
+use DateTime;
+use Exception;
+
 require_once 'database/SqlSrv_con.php';
 
 //Définition de la classe Contract avec ses getters et setters
@@ -27,20 +31,21 @@ class Contract
     private string $sign_datetime;
     private string $loc_begin_datetime;
     private string $loc_end_datetime;
-    private string $returning_datetime;
+    private ?string $returning_datetime;
     private float $price;
 
 
     //Constructeur de la classe
-    public function __construct(?int $id,
+    public function __construct(
+        ?int $id,
         string $vehicle_uid,
         string $customer_uid,
         string $sign_datetime,
         string $loc_begin_datetime,
         string $loc_end_datetime,
-        string $returning_datetime,
-        float $price)
-    {
+        ?string $returning_datetime,
+        float $price
+    ) {
 
 
         $this->id = $id;
@@ -116,12 +121,12 @@ class Contract
         $this->loc_end_datetime = $loc_end_datetime;
     }
 
-    public function getReturningDatetime(): string
+    public function getReturningDatetime(): ?string
     {
         return $this->returning_datetime;
     }
 
-    public function setReturningDatetime(string $returning_datetime): void
+    public function setReturningDatetime(?string $returning_datetime): void
     {
         $this->returning_datetime = $returning_datetime;
     }
@@ -221,38 +226,38 @@ class ContractModel extends AbstractSqlSrv
 
 
 
-     private function formatDateForDB($date)
-    {
-        return date('Y-m-d H:i:s', strtotime($date));
+
+public function createContract(Contract $contract): bool
+{
+    // Convertir les chaînes de caractères en objets DateTime
+    $sign_datetime = new DateTime($contract->getSignDatetime());
+    $loc_begin_datetime = new DateTime($contract->getLocBeginDatetime());
+    $loc_end_datetime = new DateTime($contract->getLocEndDatetime());
+
+    // Vérifier si la date de retour est nulle
+    $returning_datetime = null;
+    if ($contract->getReturningDatetime() !== null && $contract->getReturningDatetime() !== "") {
+        $returning_datetime = new DateTime($contract->getReturningDatetime());
     }
-    public function createContract(Contract $contract): bool
 
-    {
+    // Créer un tableau de données pour l'insertion
+    $data = [
+        'vehicle_uid' => $contract->getVehicleUid(),
+        'customer_uid' => $contract->getCustomerUid(),
+        'sign_datetime' => $sign_datetime->format('Y-m-d H:i:s'),
+        'loc_begin_datetime' => $loc_begin_datetime->format('Y-m-d H:i:s'),
+        'loc_end_datetime' => $loc_end_datetime->format('Y-m-d H:i:s'),
+        'returning_datetime' => $returning_datetime ? $returning_datetime->format('Y-m-d H:i:s') : null,
+        'price' => $contract->getPrice()
+    ];
 
-        $sign_datetime = $this->formatDateForDB($contract->getSignDatetime());
-        $loc_begin_datetime = $this->formatDateForDB($contract->getLocBeginDatetime());
-        $loc_end_datetime = $this->formatDateForDB($contract->getLocEndDatetime());
-        $returning_datetime = $this->formatDateForDB($contract->getReturningDatetime());
-
-
-
-        $data = [
-            'vehicle_uid' => $contract->getVehicleUid(),
-            'customer_uid' => $contract->getCustomerUid(),
-            'sign_datetime' => $sign_datetime,
-            'loc_begin_datetime' => $loc_begin_datetime,
-            'loc_end_datetime' => $loc_end_datetime,
-            'returning_datetime' => $returning_datetime,
-            'price' => $contract->getPrice()
-        ];
-
-var_dump($data);
+    // Utilisation de la méthode create de la classe parent pour insérer les données du contrat dans la table contract
+    $toInsert = parent::create($data);
+    return $toInsert;
+}
 
 
-        //Utilisation de la méthode create de la classe parent pour insérer les données du contrat dans la table contract
-        $toInsert = parent::create($data);
-        return $toInsert;
-    }
+
 
 
 
@@ -260,24 +265,34 @@ var_dump($data);
 
 
     /************************Méthode pour modifier un contrat dans la table contract*****************/
-    public function updateContract(Contract $contract, int $id): bool
-    {
-        $data = [
-            'vehicle_uid' => $contract->getVehicleUid(),
-            'customer_uid' => $contract->getCustomerUid(),
-            'sign_datetime' => $contract->getSignDatetime(),
-            'loc_begin_datetime' => $contract->getLocBeginDatetime(),
-            'loc_end_datetime' => $contract->getLocEndDatetime(),
-            'returning_datetime' => $contract->getReturningDatetime(),
-            'price' => $contract->getPrice()
-        ];
+public function updateContract(Contract $contract, int $id): bool
+{
+    // Convertir les chaînes de caractères en objets DateTime
+    $sign_datetime = new DateTime($contract->getSignDatetime());
+    $loc_begin_datetime = new DateTime($contract->getLocBeginDatetime());
+    $loc_end_datetime = new DateTime($contract->getLocEndDatetime());
 
-
-
-        //Utilisation de la méthode update de la classe parent pour modifier les données du contrat dans la table contract
-        $toUpdate = parent::update($data, $id);
-        return $toUpdate;
+    // Vérifier si la date de retour est nulle
+    $returning_datetime = null;
+    if ($contract->getReturningDatetime() !== null && $contract->getReturningDatetime() !== "") {
+        $returning_datetime = new DateTime($contract->getReturningDatetime());
     }
+
+    // Créer un tableau de données pour la mise à jour
+    $data = [
+        'vehicle_uid' => $contract->getVehicleUid(),
+        'customer_uid' => $contract->getCustomerUid(),
+        'sign_datetime' => $sign_datetime->format('Y-m-d H:i:s'),
+        'loc_begin_datetime' => $loc_begin_datetime->format('Y-m-d H:i:s'),
+        'loc_end_datetime' => $loc_end_datetime->format('Y-m-d H:i:s'),
+        'returning_datetime' => $returning_datetime ? $returning_datetime->format('Y-m-d H:i:s') : null,
+        'price' => $contract->getPrice()
+    ];
+
+    // Utilisation de la méthode update de la classe parent pour modifier les données du contrat dans la table contract
+    $toUpdate = parent::update($data, $id);
+    return $toUpdate;
+}
 
 
     /**************************Méthode pour effacer un contrat par sa clé unique*************************************/
@@ -293,99 +308,4 @@ var_dump($data);
             return $toDelete;
         }
     }
-
-
-    /******************Methode pour récupérer la liste des contrats par uid utilisateur ********************/
-/*
-    public function getContractsByUser(string $uid): string
-    {
-        $filter = "customer_uid = '$uid'";
-
-        //Utilisation de la méthode readByFilter de la classe parent pour récupérer les données des contrats filtrées par uid utilisateur
-        $contracts = parent::readByFilter($filter, null);
-        echo $contracts;
-        return $contracts;
-    }*/
-
-
-    /****************Liste des locations en cours associées à un utilisateur******************//*
-    public function getOngoingContractsByUser($uid)
-    {
-
-
-        $filter = "customer_uid = '$uid' AND loc_end_datetime > GETDATE()";
-
-        $contracts = parent::readByFilter($filter);
-        echo $contracts;
-        return $contracts;
-    }
-*/
-
-    /****************Méthode pour récupérer la Liste de toutes les locations en retard ******************/
-    //Get late contract 
-   /* public function getLateContracts()
-    {
-
-
-        $filters = "returning_datetime IS NULL AND loc_end_datetime < GETDATE() AND vehicle_uid IS NOT NULL AND customer_uid IS NOT NULL";
-
-        //Utilisation de la mé
-
-        $lateContracts = parent::readByFilter($filters, null);
-        return $lateContracts;
-    }
-*/
-
-    /********************************** Méthode pour compter le nombre de retard entre deux dates**********************************/
-
-    
-
-public function getNbDelayBetweenDates(string $start_date, string $end_date)
- {
-    $conditions = "returning_datetime IS NOT NULL AND loc_end_datetime < returning_datetime AND loc_end_datetime BETWEEN '$start_date' AND '$end_date'";
-    $delays = parent::readByFilter($conditions, null);
-
-    $delays = json_decode($delays, JSON_PRETTY_PRINT);
-  var_dump(count($delays));
-    
-
-    
-    //return count($delays);
-}
-
-
-    
-
-
-/*****************************************Méthode pour obtenir le nombre de retard moyen par client **********************************/
-
-public function getAvgDelayByCustomer(){
-
- $pdo= new SqlSrv_con();
- $connection=$pdo->connect();
-
-
-
-
-   $sql = "SELECT customer_uid, AVG(DATEDIFF(hour, loc_end_datetime, returning_datetime)) as avg_delay
-            FROM Contract
-            WHERE returning_datetime IS NOT NULL AND DATEDIFF(hour, loc_end_datetime, returning_datetime) > 1
-            GROUP BY customer_uid";
-
-// Préparer la requête
-
-$stmt=$connection->prepare($sql);
-
-$stmt->execute();
-
-$result=$stmt->fetchAll(PDO::FETCH_ASSOC);
-$result=json_encode($result);
-
-return $result;
-
-
-}
-
-
-
 }

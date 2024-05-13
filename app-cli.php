@@ -113,12 +113,9 @@ while (true) {
 
                 'a' => "Liste des locations en retard",
                 'b' => "Liste des locations non payées",
-                'c' => "Nombre de retards entre deux dates données",
-                'd' => "Obtenir le nombre de retard moyen par client",
-                'e' => "Obtenir la moyenne du temps de retard par véhicule",
-                'f' => "Obtenir tous les contrats regroupés par véhicules",
-                'g' => "Obtenir tous les contrats regroupés par clients",
-                'h' => "Retour au menu principal"
+                'c' => "Obtenir tous les contrats regroupés par véhicules",
+                'd' => "Obtenir tous les contrats regroupés par clients",
+                'e' => "Retour au menu principal"
 
             ];
 
@@ -137,117 +134,60 @@ while (true) {
                     case 'a':
 
 
-                    clearScreen();   
+                        clearScreen();
                         //Liste des locations en retard
 
-                        /*
-                       
-                        */
-                        $contract=new App\sqlsrv\ContractAggregator($connection->getConnection(), $connectionMdb->getDB());
-                        //$conditions = "loc_end_datetime < GETDATE() AND (returning_datetime IS NULL OR returning_datetime < GETDATE())";
+                        $contract = new App\sqlsrv\ContractAggregator($connection->getConnection(), $connectionMdb->getDB());
                         $conditions = "returning_datetime > DATEADD(hour, 1, loc_end_datetime) AND returning_datetime IS NOT NULL";
 
-                        
+
                         $lateContracts = $contract->getContracts($conditions, null);
 
-                        $lateContracts=json_decode($lateContracts, JSON_PRETTY_PRINT);
+                        $lateContracts = json_decode($lateContracts, JSON_PRETTY_PRINT);
 
-                              foreach ($lateContracts as $contract) {
+                        foreach ($lateContracts as $contract) {
                             // Afficher l'ID et les informations du contrat
                             echo "ID : {$contract['id']} - Client : {$contract['customer_name']} - Véhicule : {$contract['vehicle_licence_plate']} - Prix total : {$contract['price']} - Début : {$contract['loc_begin_datetime']} - Fin : {$contract['loc_end_datetime']}\n";
                         }
-
-
-
 
                         break;
 
                     case 'b':
 
-clearScreen();
+                        clearScreen();
                         //Liste des locations non payées
                         typewriter("Liste des locations non payées");
 
-echo "\n";
+                        echo "\n";
 
-                    $fullUnpaidLocations=new App\sqlsrv\ContractPaid();
-                    $fullUnpaidContracts=$fullUnpaidLocations->getUnpaidContractsWithCustomerData();
-                        //Afficher la sortie.
-echo "\n";
-                        //var_dump($unpaidContracts);
+                        $fullUnpaidLocations = new App\sqlsrv\ContractPaid();
+                        $fullUnpaidContracts = $fullUnpaidLocations->getUnpaidContractsWithCustomerData();
+                    
+                        echo "\n";
 
                         //Transformer en tableau
 
-                        $fullUnpaidContracts=json_decode($fullUnpaidContracts);
+                        $fullUnpaidContracts = json_decode($fullUnpaidContracts);
 
-foreach ($fullUnpaidContracts as $contract) {
-    // Afficher l'ID et les informations du contrat
-    echo "ID : {$contract->ContractId} - Client : {$contract->CustomerName} {$contract->CustomerLast} - Prix total : {$contract->TotalDue} - Payé : {$contract->TotalPaid}\n";
-}
+                        foreach ($fullUnpaidContracts as $contract) {
+                            // Afficher l'ID et les informations du contrat
+                            echo "ID : {$contract->ContractId} - Client : {$contract->CustomerName} {$contract->CustomerLast} - Prix total : {$contract->TotalDue} - Payé : {$contract->TotalPaid}\n";
+                        }
 
-                        //var_dump($fullUnpaidContracts);
 
-                        
+                        echo "\n";
 
-echo "\n";
 
-                        
-
-                
-                       
-
-                       flush();   
+                        flush();
 
                         break;
+
+
+
+
+
 
                     case 'c':
-
-
-     
-                    $startDate=readline("Entrez la date de début (format : Y-m-d H:i:s) : ");
-                    $endDate=readline("Entrez la date de fin (format : Y-m-d H:i:s) : ");
-                        //Nombre de retards entre deux dates données
-                    $contractBetweenDates=new App\sqlsrv\ContractModel();
-                    $NbLateContracts=$contractBetweenDates->getNbDelayBetweenDates($startDate, $endDate);
-
-                    echo "Nombre de retards entre le $startDate et le $endDate : $NbLateContracts\n";
-
-                    flush();
-
-
-
-
-
-
-
-                        break;
-
-                    case 'd':
-
-                   // $contracts=new App\sqlsrv\ContractModel();
-                    //$allcontracts=$contracts->readAll();    
-
-                    //echo  trim($allcontracts);
-
-                        //Obtenir le nombre de retard moyen par client
-
-                    $average=new App\sqlsrv\ContractModel();
-                    $nbAverage=$average->getAvgDelayByCustomer();
-                    
-                    echo $nbAverage;
-
-
-
-                        break;
-
-                    case 'e':
-
-                        //Obtenir la moyenne du temps de retard par véhicule
-
-                        break;
-
-
-                    case 'f':
 
                         //Obtenir tous les contrats regroupés par véhicules
 
@@ -281,7 +221,7 @@ echo "\n";
 
                         break;
 
-                    case 'g':
+                    case 'd':
 
                         //Obtenir tous les contrats regroupés par clients
 
@@ -311,7 +251,7 @@ echo "\n";
 
                         break;
 
-                    case 'h':
+                    case 'e':
 
                         //Retour au menu principal
 
@@ -333,12 +273,11 @@ echo "\n";
             //Option 2 : Requêtes sur les contrats
             // Sous-menu 
             $submenu = [
-                'a' => 'Créer un contrat à la date actuelle',
-                'b' => 'Créer un contrat à une autre date',
-                'c' => 'Rechercher un contrat par son ID',
-                'd' => 'Afficher tous les contrats et effectuer des opérations sur un contrat spécifique',
-                'e' => 'Retour au menu principal',
-                'f' => 'Quitter l\'application'
+                'a' => 'Créer un contrat',
+                'b' => 'Rechercher un contrat par son ID',
+                'c' => 'Afficher tous les contrats et effectuer des opérations sur un contrat spécifique',
+                'd' => 'Retour au menu principal',
+                'e' => 'Quitter l\'application'
             ];
 
 
@@ -360,37 +299,140 @@ echo "\n";
 
                     case 'a':
                         //Créer un contrat à la date actuelle
-                        typewriter("Création d'un contrat à la date actuelle\n");
+                        typewriter("Création d'un contrat\n");
 
-                        // Demander à l'utilisateur de saisir l'UID du véhicule
-                        $vehicleUid = readline('Entrez l\'UID du véhicule : ');
 
-                        // Demander à l'utilisateur de saisir l'UID du client
-                        $customerUid = readline('Entrez l\'UID du client : ');
+                    //Choix du véhicule dans une liste
 
-                        //DAte de signature du contrat correspond à la date actuelle
+                     // Récupérer tous les véhicules
+                        $vehicle = new App\mongo\VehicleModel();
+                        $vehicles = $vehicle->readAll();
+
+                        // Convertir les données des véhicules en tableau associatif PHP
+                        $vehicles = json_decode($vehicles, true);
+
+                        // Afficher les véhicules
+                        echo "Liste des véhicules :\n";
+
+
+                        $i = 1;
+                        foreach ($vehicles as $vehicle) {
+                            // Récupérer la valeur de $oid à partir de l'objet _id
+                            $oid = $vehicle['_id']['$oid'];
+
+                            echo "{$i}. {$vehicle['licence_plate']} (ID: {$oid})\n";
+                            $i++;
+                        }
+
+                        // Demander à l'utilisateur de saisir le numéro du véhicule à sélectionner et récupérer $oid correspondant
+
+
+
+                        $vehicleNumber = readline("Entrez le numéro du véhicule à sélectionner : ");
+
+                        // Vérifier si la sélection est valide et récupérer l'ID du véhicule correspondant  
+
+                        $selectedVehicleId = null;
+                        $selectedVehicleLicensePlate = null;
+
+                        if (is_numeric($vehicleNumber) && $vehicleNumber >= 1 && $vehicleNumber < count($vehicles) + 1) {
+                            // Récupérer la valeur de $oid à partir de l'objet _id
+                            $selectedVehicleId = $vehicles[$vehicleNumber - 1]['_id']['$oid'];
+                          
+
+                        }
+
+                        else{
+                            echo "Saisie invalide\n";
+                            break;
+                        }   
+
+                        //Choix du client dans une liste
+
+                        // Récupérer tous les clients
+
+                        $customer = new App\mongo\CustomerModel();
+
+                        $customers = $customer->readAll();
+
+                        // Convertir les données des clients en tableau associatif PHP
+
+                        $customers = json_decode($customers, true);
+
+                        // Afficher les clients
+
+                        echo "Liste des clients :\n";
+
+                        $i = 1;
+
+                        foreach ($customers as $customer) {
+                            // Récupérer la valeur de $oid à partir de l'objet _id
+                            $oid = $customer['_id']['$oid'];
+
+                            echo "{$i}. {$customer['first_name']} {$customer['second_name']} (ID: {$oid})\n";
+                            $i++;
+                        }
+
+                        // Demander à l'utilisateur de saisir le numéro du client à sélectionner et récupérer $oid correspondant
+
+                        $customerNumber = readline("Entrez le numéro du client à sélectionner : ");
+
+                        // Vérifier si la sélection est valide et récupérer l'ID du client correspondant
+
+                        $selectedCustomerId = null;
+
+                        if (is_numeric($customerNumber) && $customerNumber >= 1 && $customerNumber < count($customers) + 1) {
+                            // Récupérer la valeur de $oid à partir de l'objet _id
+                            $selectedCustomerId = $customers[$customerNumber - 1]['_id']['$oid'];
+                        } else {
+                            echo "Saisie invalide\n";
+                            break;
+                        }
+
+
+                        //Donner le choix à l'utilisateur de saisir la date et l'heure de signature du contrat ou la date actuelle
+
+                        echo "\n";
+
+                        echo "Voulez-vous créer le contrat à la date actuelle ? (o/n) : ";
+
+                        $currentDate = readline();
+
+                        if ($currentDate === 'o') {
+                            $signDatetime = date('Y-m-d H:i:s');
+                        } else {
+                            // Demander à l'utilisateur de saisir la date et l'heure de signature du contrat
+                            $signDatetime = readline('Entrez la date et l\'heure de signature du contrat (format : Y-m-d H:i:s) : ');
+                        }
+
 
                         $signDatetime = date('Y-m-d H:i:s');
 
-                        // Demander à l'utilisateur de saisir la date et l'heure de début de la location
-                        $locBeginDatetime = readline('Entrez la date et l\'heure de début de la location (format : Y-m-d H:i:s) : ');
+                        echo "\n";
+
+                        echo "Voulez-vous démarrer la location à la date actuelle ? (o/n) : ";
+
+                        $currentDate = readline();
+
+                        if ($currentDate === 'o') {
+                            $locBeginDatetime = date('Y-m-d H:i:s');
+                        } else {
+                            // Demander à l'utilisateur de saisir la date et l'heure de début de la location
+                            $locBeginDatetime = readline('Entrez la date et l\'heure de début de la location (format : Y-m-d H:i:s) : ');
+                        }             
 
                         // Demander à l'utilisateur de saisir la date et l'heure de fin de la location
                         $locEndDatetime = readline('Entrez la date et l\'heure de fin de la location (format : Y-m-d H:i:s) : ');
 
-                        // Demander à l'utilisateur de saisir la date et l'heure de retour du véhicule (peut être null)
-                        $returningDatetime = readline('Entrez la date et l\'heure de retour du véhicule (format : Y-m-d H:i:s) ou laissez vide si non applicable : ');
-                        if ($returningDatetime === '') {
-                            $returningDatetime = null;
-                        }
-
-
-
                         // Demander à l'utilisateur de saisir le prix de la location
                         $price = readline('Entrez le prix de la location : ');
 
+                        //$contractToAdd = new App\sqlsrv\Contract(null, '123', '456', '2021-06-01 12:00:00', '2021-06-01 12:00:00', '2021-06-01 12:00:00', '2021-06-01 12:00:00', 100);
+
                         // Créer un nouvel objet Contract avec les données saisies par l'utilisateur
-                        $contract = new App\sqlsrv\Contract(null, $vehicleUid, $customerUid, $signDatetime, $locBeginDatetime, $locEndDatetime, $returningDatetime, $price);
+                        $contract = new App\sqlsrv\Contract(null, $selectedVehicleId, $selectedCustomerId, $signDatetime, $locBeginDatetime, $locEndDatetime, null, $price);
+
+                        
 
 
                         // Appeler la méthode createContract() pour insérer le contrat dans la base de données
@@ -398,19 +440,14 @@ echo "\n";
                         $contractId = $contractModel->createContract($contract);
 
                         // Afficher un message de confirmation avec l'ID du contrat inséré
-                        echo "Le contrat a été créé avec l'ID $contractId.\n";
+                        echo "Le contrat a été créé";
 
 
 
                         break;
+
 
                     case 'b':
-                        //Créer un contrat à une autre date
-                        typewriter("Création d'un contrat à une autre date\n");
-
-                        break;
-
-                    case 'c':
                         //Rechercher un contrat par son ID
                         typewriter("Recherche d'un contrat par son ID\n");
 
@@ -451,16 +488,15 @@ echo "\n";
 
                         break;
 
-                    case 'd':
+                    case 'c':
                         //Afficher tous les contrats et effectuer des opérations sur un contrat spécifique
                         typewriter("Afficher tous les contrats et effectuer des opérations sur un contrat spécifique\n");
 
                         // Récupérer tous les contrats
-                        //$contract = new App\sqlsrv\ContractModel();
-                        //$contracts = $contract->readAll();
+                      
 
                         $contract = new App\sqlsrv\ContractAggregator($connection->getConnection(), $connectionMdb->getDB());
-                        $contracts = $contract->getContracts();
+                        $contracts = $contract->getContracts(null, null);
 
                         // Convertir les données des contrats en tableau associatif PHP
                         $contracts = json_decode($contracts, true);
@@ -515,6 +551,8 @@ echo "\n";
                             echo "Fin : {$locEndDatetime}\n";
                             echo "\n";
 
+                        
+
                             // Afficher les opérations possibles sur le contrat
                             $operations = [
                                 'a' => 'Modifier le contrat',
@@ -538,17 +576,40 @@ echo "\n";
                                         // Modifier le contrat
                                         typewriter("Modification du contrat\n");
 
+                                                $contractToUpdate = new App\sqlsrv\Contract(null, $selectedContract['vehicle_uid'], $selectedContract['customer_uid'], $selectedContract['sign_datetime'], $selectedContract['loc_begin_datetime'], $selectedContract['loc_end_datetime'], $selectedContract['returning_datetime'], $selectedContract['price']);
+
+                                        
+
 
 
                                         // Demander à l'utilisateur de saisir la nouvelle date et heure de début de location
-                                        $newLocBeginDatetime = readline("Entrez la nouvelle date et heure de début de location (format : Y-m-d H:i:s) : ");
+                                        $newLocBeginDatetime = readline("Entrez la nouvelle date et heure de début de location (format : Y-m-d H:i:s) - vide si inchangé: ");
 
+                                        if($newLocBeginDatetime != "") 
+                                        {
+                                        $contractToUpdate->setLocBeginDatetime($newLocBeginDatetime);
+                                        }
                                         // Demander à l'utilisateur de saisir la nouvelle date et heure de fin de location
-                                        $newLocEndDatetime = readline("Entrez la nouvelle date et heure de fin de location (format : Y-m-d H:i:s) : ");
+                                        $newLocEndDatetime = readline("Entrez la nouvelle date et heure de fin de location (format : Y-m-d H:i:s) - vide si inchangé : ");
 
+                                         if ($newLocEndDatetime != ""){   
+                                        $contractToUpdate->setLocEndDatetime($newLocEndDatetime);
+                                         }
+                                        
+                                        if ($newLocEndDatetime != ""){
+                                        $newReturningDatetime = readline("Entrez la date et heure de retour du véhicule (format : Y-m-d H:i:s) - vide si inchangé: ");
+                                        }
+
+                                        var_dump($contractToUpdate);
                                         // Modifier le contrat dans la base de données
                                         $contractModel = new App\sqlsrv\ContractModel();
-                                        $contractModel->updateContract($contractId, $newLocBeginDatetime, $newLocEndDatetime);
+                                        $contractModel->updateContract($contractToUpdate, $contractId);
+
+                                        
+                                  
+
+                                
+                            
 
                                         // Afficher un message de confirmation
                                         echo "Le contrat a été modifié.\n";
@@ -635,12 +696,12 @@ echo "\n";
                             }
                         }
 
-                    case 'e':
+                    case 'd':
                         //Retour au menu principal
                         clearScreen();
                         break 2;
 
-                    case 'f':
+                    case 'e':
 
                         getMeOutOfHere();
 
@@ -688,6 +749,7 @@ echo "\n";
 
                         // Demander à l'utilisateur de saisir le prénom du client
                         $firstName = readline('Entrez le prénom du client : ');
+                        
 
                         // Demander à l'utilisateur de saisir le nom du client
                         $secondName = readline('Entrez le nom du client : ');
@@ -1220,8 +1282,7 @@ echo "\n";
                                         typewriter("Obtention des contrats associés à ce véhicule\n");
 
                                         // Récupérer les contrats associés au véhicule
-                                        //$contract = new App\sqlsrv\ContractModel();
-                                        //$contracts = $contract->getContractsByVehicle($selectedVehicleId);
+                                
                                         $contract = new App\sqlsrv\ContractAggregator($connection->getConnection(), $connectionMdb->getDB());
 
                                         $filtre = "vehicle_uid = '$selectedVehicleId'";
@@ -1242,24 +1303,6 @@ echo "\n";
                                             echo "ID : {$contract['id']} - Client : {$contract['customer_name']} - Véhicule : {$contract['vehicle_licence_plate']} - Prix total : {$contract['price']} - Début : {$contract['loc_begin_datetime']} - Fin : {$contract['loc_end_datetime']}\n";
                                         }
 
-
-                                        // Parcourir le tableau des contrats
-
-                                        // Parcourir le tableau des contrats
-                                        /*  foreach ($contracts as $contract) {
-                                            // Vérifier si la propriété 'id' est définie avant d'y accéder
-                                            if (isset($contract['id'])) {
-                                                // Afficher l'ID et les informations du contrat
-                                                echo "ID : {$contract['id']}";
-
-                                                // Vérifier si les propriétés 'loc_begin_datetime' et 'loc_end_datetime' sont définies avant d'y accéder
-                                                if (isset($contract['loc_begin_datetime']) && isset($contract['loc_end_datetime'])) {
-                                                    echo " - Début : {$contract['loc_begin_datetime']} - Fin : {$contract['loc_end_datetime']}\n";
-                                                } else {
-                                                    echo " - Les dates de début et/ou de fin ne sont pas définies\n";
-                                                }
-                                            }
-                                        }*/
 
                                         echo "\n";
 

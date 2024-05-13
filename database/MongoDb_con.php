@@ -31,9 +31,9 @@ class MongoDB_con
         $this->port = $port;
 
         try {
-            // $uri = "mongodb://{$this->username}:{$this->password}@{$this->host}:{$this->port}";
-            $this->mongoClient = new MongoDB\Client("mongodb://$host:$port");
-            //$this->mongoClient = new MongoDB\Client($uri);
+            $uri = "mongodb://{$this->username}:{$this->password}@{$this->host}:{$this->port}";
+            //$this->mongoClient = new MongoDB\Client("mongodb://$host:$port");
+            $this->mongoClient = new MongoDB\Client($uri);
             $this->db = $this->mongoClient->$dbname;
         } catch (Exception $e) {
             die('Erreur de connexion à MongoDB : ' . $e->getMessage());

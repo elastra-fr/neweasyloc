@@ -22,9 +22,6 @@ Menu de l'outils en lignes de commande :
     1- Requêtes globales
         -Liste des locations en retard
         -Liste des locations non payées
-        -Nombre de retards entre deux dates données
-        -Obtenir le nombre de retard moyen par client
-        -Obtenir la moyenne du temps de retard par véhicule
         -Obtenir tous les contrats regroupés par véhicules
         -Obtenir tous les contrats regroupés par clients
         -Retour au menu principal

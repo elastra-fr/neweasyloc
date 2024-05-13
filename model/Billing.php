@@ -19,12 +19,12 @@ class Billing{
 
 
 //Attributs de la classe
-    private int $ID;
+    private ?int $ID;
     private int $Contract_id;
     private float $Amount;
 
     //Constructeur de la classe
-    public function __construct(int $ID, int $Contract_id, float $Amount) {
+    public function __construct(?int $ID, int $Contract_id, float $Amount) {
         $this->ID = $ID;
         $this->Contract_id = $Contract_id;
         $this->Amount = $Amount;
@@ -32,7 +32,7 @@ class Billing{
 
 
     //Getters et setters
-    public function getID(): int{
+    public function getID(): ?int{
         return $this->ID;
     }
 
