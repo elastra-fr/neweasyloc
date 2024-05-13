@@ -144,8 +144,8 @@ $stmt = $this->dbcon->getConnection()->query($create);
 
 //Préparation de la requête avec utilisation des marqueurs de paramètres pour éviter les injections SQL
         $stmt = $this->dbcon->getConnection()->prepare($sql);
-        var_dump($data);
-        var_dump($sql);
+        //var_dump($data);
+        //var_dump($sql);
         $stmt->execute($data);
         return true;
         }
@@ -187,16 +187,27 @@ return false;
     public function update(array $data, int $id)
     {
 
- var_dump($data);
+        try{
+
+ //var_dump($data);
         $sql = "UPDATE $this->table SET ";
         $sql .= implode(" = ?, ", array_keys($data)) . ' = ?';
         $sql .= " WHERE id = $id";
         //Préparation de la requête avec utilisation des marqueurs de paramètres pour éviter les injections SQL
         $stmt = $this->dbcon->getConnection()->prepare($sql);
-        var_dump($sql);
+        //var_dump($sql);
         $stmt->execute(array_values($data));
         echo "Contrat n°".$id." mis à jour avec succès\n";
         return true;
+        }
+
+        catch(Exception $e){
+
+            echo "Erreur: " . $e->getMessage();
+            return false;
+
+        }   
+
     }   
 
 

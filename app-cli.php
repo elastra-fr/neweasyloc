@@ -400,13 +400,14 @@ while (true) {
 
                         if ($currentDate === 'o') {
                             $signDatetime = date('Y-m-d H:i:s');
+                            
                         } else {
                             // Demander à l'utilisateur de saisir la date et l'heure de signature du contrat
                             $signDatetime = readline('Entrez la date et l\'heure de signature du contrat (format : Y-m-d H:i:s) : ');
                         }
 
 
-                        $signDatetime = date('Y-m-d H:i:s');
+                     
 
                         echo "\n";
 
@@ -430,7 +431,7 @@ while (true) {
                         //$contractToAdd = new App\sqlsrv\Contract(null, '123', '456', '2021-06-01 12:00:00', '2021-06-01 12:00:00', '2021-06-01 12:00:00', '2021-06-01 12:00:00', 100);
 
                         // Créer un nouvel objet Contract avec les données saisies par l'utilisateur
-                        $contract = new App\sqlsrv\Contract(null, $selectedVehicleId, $selectedCustomerId, $signDatetime, $locBeginDatetime, $locEndDatetime, null, $price);
+                        $contract = new App\sqlsrv\Contract(null, $selectedVehicleId, $selectedCustomerId, $signDatetime, $locBeginDatetime, $locEndDatetime, "null", $price);
 
                         
 
@@ -596,16 +597,29 @@ while (true) {
                                         $contractToUpdate->setLocEndDatetime($newLocEndDatetime);
                                          }
                                         
-                                        if ($newLocEndDatetime != ""){
+                                        //Demander à l'utilisateur de saisir la nouvelle date et heure de retour du véhicule
+
                                         $newReturningDatetime = readline("Entrez la date et heure de retour du véhicule (format : Y-m-d H:i:s) - vide si inchangé: ");
+
+                                        if ($newReturningDatetime != "") {
+                                            $contractToUpdate->setReturningDatetime($newReturningDatetime);
                                         }
 
-                                        var_dump($contractToUpdate);
+
+                                        $newPrice = readline("Entrez le nouveau prix de la location - vide si inchangé : ");
+
+                                        if ($newPrice != "") {
+                                            $contractToUpdate->setPrice($newPrice);
+                                        }
+
+                                        //var_dump($contractToUpdate);
                                         // Modifier le contrat dans la base de données
                                         $contractModel = new App\sqlsrv\ContractModel();
                                         $contractModel->updateContract($contractToUpdate, $contractId);
 
                                         
+                                        //Demander à l'utilisateur de saisir le nouveau prix de la location
+
                                   
 
                                 

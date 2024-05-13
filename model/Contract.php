@@ -236,18 +236,20 @@ public function createContract(Contract $contract): bool
 
     // Vérifier si la date de retour est nulle
     $returning_datetime = null;
-    if ($contract->getReturningDatetime() !== null && $contract->getReturningDatetime() !== "") {
+    if ($contract->getReturningDatetime() !== null && $contract->getReturningDatetime() !== "" && $contract->getReturningDatetime() !== "null"){
         $returning_datetime = new DateTime($contract->getReturningDatetime());
+         $returning_datetime= $returning_datetime->format('Ymd H:i:s.v');
     }
+
 
     // Créer un tableau de données pour l'insertion
     $data = [
         'vehicle_uid' => $contract->getVehicleUid(),
         'customer_uid' => $contract->getCustomerUid(),
-        'sign_datetime' => $sign_datetime->format('Y-m-d H:i:s'),
-        'loc_begin_datetime' => $loc_begin_datetime->format('Y-m-d H:i:s'),
-        'loc_end_datetime' => $loc_end_datetime->format('Y-m-d H:i:s'),
-        'returning_datetime' => $returning_datetime ? $returning_datetime->format('Y-m-d H:i:s') : null,
+        'sign_datetime' => $sign_datetime->format('Ymd H:i:s.v'),
+        'loc_begin_datetime' => $loc_begin_datetime->format('Ymd H:i:s.v'),
+        'loc_end_datetime' => $loc_end_datetime->format('Ymd H:i:s.v'),
+        'returning_datetime' => $returning_datetime, 
         'price' => $contract->getPrice()
     ];
 
@@ -274,18 +276,19 @@ public function updateContract(Contract $contract, int $id): bool
 
     // Vérifier si la date de retour est nulle
     $returning_datetime = null;
-    if ($contract->getReturningDatetime() !== null && $contract->getReturningDatetime() !== "") {
+    if ($contract->getReturningDatetime() !== null && $contract->getReturningDatetime() !== "" && $contract->getReturningDatetime() !== "null"){
         $returning_datetime = new DateTime($contract->getReturningDatetime());
+         $returning_datetime= $returning_datetime->format('Ymd H:i:s.v');
     }
 
     // Créer un tableau de données pour la mise à jour
     $data = [
         'vehicle_uid' => $contract->getVehicleUid(),
         'customer_uid' => $contract->getCustomerUid(),
-        'sign_datetime' => $sign_datetime->format('Y-m-d H:i:s'),
-        'loc_begin_datetime' => $loc_begin_datetime->format('Y-m-d H:i:s'),
-        'loc_end_datetime' => $loc_end_datetime->format('Y-m-d H:i:s'),
-        'returning_datetime' => $returning_datetime ? $returning_datetime->format('Y-m-d H:i:s') : null,
+        'sign_datetime' => $sign_datetime->format('Ymd H:i:s.v'),
+        'loc_begin_datetime' => $loc_begin_datetime->format('Ymd H:i:s.v'),
+        'loc_end_datetime' => $loc_end_datetime->format('Ymd H:i:s.v'),
+       'returning_datetime' => $returning_datetime, 
         'price' => $contract->getPrice()
     ];
 
